@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Frequencia</title>
+    <style>
+        table, th, tr, td {
+        border: 1px solid black;
+        }
+</style>
+</head>
+-->
+
+{% block content%}
+    <style>
+        table, th, tr, td {
+        border: 1px solid black;
+        }
+</style>
+
+<body>
+
+<table id="formulariofreq" style="width:85%; margin-left:50px; margin-top:40px">
+    <thead>Formulario de Frequencia</thead>
+    <tr>
+        <td style="width:80%">Nome</td>
+        <td>Presente</td>
+    </tr>
+    {% for chegada in getchegadas() %}
+    <tr>
+        <td style="width:80%">
+            <label>
+                {{ chegada[1] }}
+            </label>
+        </td>
+        <td><input type="checkbox" value={{ chegada[1] }}></td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<button type="submit" style="margin-top:35px; margin-left:50px;">Enviar</button>
+</body>
+{% endblock %}
+<!--
+<script>
+    async function poptable(){
+        console.log("poptable chamado")
+        var tabela = document.getElementById("formulariofreq");
+        var nomes = await fetch('chegadas');
+        if (nomes.ok){
+            var dogs = await nomes.json();
+            for (let dog of dogs){
+                console.log(dog[1]);
+                var nrow = tabela.insertRow(1);
+                var ncell = nrow.insertCell(0);
+                var nccheck = nrow.insertCell(1);
+                ncell.innerHTML = dog[1];
+                nccheck.innerHTML = `<input type=checkbox value=${ncell.innerText}>`
+            };
+        };
+    };
+</script>
+</html>
+-->

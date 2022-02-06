@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+{% if current_user.role == 'superadmin'%}
+{% endif %}
+ <p>
+        {% for link in links %}
+            {{ link }}
+        {% endfor %}
+    </p>
+
+{% if current_user.role == 'cliente' or  current_user.role == 'superadmin'%}
+{% endif %}
+{% endif %}
+<div class="mt-5">
+    <p>
+        {{ dog_fat|safe }}
+    </p>
+    <!-- preciso pegar o  link qe está na tag acima ^ -->
+    <img src="data:image/png;base64,{{ imagem }}" width="300" height="300"> <br>
+    <label id="chavepix"> {{ chave_pix }} </label>
+    <div class="row mt-5">
+        <div class="col-sm-5 mb-5">
+            <input role="button" class="btn btn-info" value="Copiar a chave PIX" id="cppix" onclick="copiarpix()">
+        </div>
+        <div class="col-sm-5">
+            <input disabled="true" role="button" class="btn btn-info" value="Link Pic Pay (Em Breve)"
+                   id="cppicpay"
+                   onclick="copiarpicpay()">
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function copiarpicpay() {
+        var textArea = document.getElementById("cppix");
+        // var chave = "11c358f9-a42d-434f-b791-f176de78f215"
+        var ta = document.createElement('textarea');
+        document.body.append(ta);
+        ta.innerText = 'Funcionalidade em breve';
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+    };
+
+    function copiarpix(){
+        var textArea = document.getElementById("cppix");
+        var chave = '{{ copiaecola }}'
+        var ta = document.createElement('textarea');
+        ta.innerText = chave;
+        document.body.append(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+    };
+
+</script>
+
+{% endblock %}

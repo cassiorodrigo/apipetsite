@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+{% if current_user.role == 'superadmin' or current_user.role == 'admin'%}
+<br>
+<label id="mostrador"></label>
+<table id="tablemostradora" style="width:85%; margin-left:50px; margin-top:25px">
+        <thead>Chegadas</thead>
+        <tbody>
+                <tr>
+                        <th>Nome</th>
+                        <th>Cao</th>
+                        <th>Raça</th>
+                        <th>Dias Por Semana</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                </tr>
+
+        {% for cliente in getclientes %}
+                <tr>
+                        <td>{{ cliente[1] }}</td>
+                        <td>{{ cliente[4] }}</td>
+                        <td>{{ cliente[12] }}</td>
+                        <td>{{ cliente[6] }}</td>
+                        <td>{{ cliente[2] }}</td>
+                        <td>{{ cliente[13] }}</td>
+                </tr>
+        {% endfor %}
+        </tbody>
+</table>
+
+<br>
+
+{% endif %}
+{% endif %}
+{% endblock %}

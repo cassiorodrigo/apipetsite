@@ -1,0 +1,12 @@
+venv/
+/test_api.py
+/testespandas.py
+/expectedj.json
+/parserforcsvdata.py
+/test_restful.py
+testeping.py
+/testeping.py
+logs/
+__pycache__/
+./__pycache__/
+dados

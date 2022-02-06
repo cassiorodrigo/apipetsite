@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col">
+        </div>
+            <div class="col">
+                <form method="POST">
+                    <label>Nome</label>  <br>
+                    <input type="text" id="nome" name="nome"> <br>
+                    <label>Quantidade de Plantoes 24h</label><br>
+                    <input type="text" id="p24" name="p24"><br>
+                    <label>Dias dos Plantoes 24h</label><br>
+                    <input type="text" id="d24" name="d24"><br>
+
+                    <label>Quantidade de Plantoes 12h</label><br>
+                    <input type="text" id="p12" name="p12"><br>
+                    <label>Dias dos Plantoes 12h</label><br>
+                    <input type="text" id="d12" name="d12"><br>
+                <!--
+                    <label>Quantidade de Plantoes 8h</label><br>
+                    <input type="text" id="p8" name="p8"><br>
+                    <label>Dias dos Plantoes 8h</label><br>
+                    <input type="text" id="d8" name="d8"><br>
+                -->
+
+                    <label>Quantidade de Plantoes Final de semana</label><br>
+                    <input type="text" id="pfds" name="pfds"><br>
+                    <label>Dias dos Plantoes Final de semana</label><br>
+                    <input type="text" id="dfds" name="dfds"><br>
+
+
+                    <label>Hora Entrada</label><br>
+                    <input type="datetime-local" id="hin" name="hin"><br>
+                    <label>Hora Saída</label><br>
+                    <input type="datetime-local" id="hout" name="hout"><br>
+                    <div class="mt-5">
+                        <button type="submit">
+                        Enviar
+                        </button>
+                        <button type="reset">Limpar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<table style="width:80%">
+    <thead>
+        <tr>
+            <th style="border : 0px">
+                Chegadas previstas
+            </th>
+
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>
+                Nome Cão
+            </th>
+            <th>
+                Data Entrada
+            </th>
+            <th>
+                Data Saída
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cada_cao in getchegadas() %}
+            <tr>
+                <td>{{ cada_cao[1] }}</td>
+                <td>{{ cada_cao[2] }}</td>
+                <td>{{ cada_cao[3] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+{% if current_user.role == 'cliente' %}
+<div class="mt-5">
+    <h2><strong>{{ current_user.name }}</strong>, Muito bem vindo ao novo sistema Pet Park </h2>
+    <hr>
+
+</div>
+{% else %}
+<div class="mt-5">
+    <h2><strong>{{ current_user.name }}</strong>, Muito bem vindo ao novo sistema Pet Park </h2>
+    <h6>{{ current_user.role }}</h6>
+    <hr>
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

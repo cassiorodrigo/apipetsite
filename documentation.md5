@@ -1,0 +1,17 @@
+
+
+Phase 1:
+
+    Create a website with the relative endpoints for later consuming via mobile app
+
+Phase 2:
+    (...)
+
+Future Steps:
+    reshape the database and the way that invoice is done.
+    Now invoice is pure text in SQL.
+    create a function to manage the variables of the invoice
+    Isolate the variables and mount it dynamically in HTML template
+    Add BRCode to Invoice
+    Create a button that copies the Pix key to the clipboard
+    Create a form for Banhos with recurrent service option

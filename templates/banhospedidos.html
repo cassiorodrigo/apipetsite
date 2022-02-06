@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="row">
+    <form method="post" id="banhosdadosform"></form>
+    <table class="mt-5">
+         <tr>
+            <th class="text-center">Nome</th>
+            <th class="text-center">Data Pedido</th>
+            <th class="text-center">Data Banho</th>
+            <th class="text-center">Tamanho</th>
+            <th class="text-center">Banho dado</th>
+        </tr>
+
+        {% if getbanhos() != None %}
+
+        {% for banho in getbanhos() %}
+            <tr>
+                <td class="text-center"> {{ banho[0] }} </td>
+                <td class="text-center"> {{ banho[1] }} </td>
+                <td class="text-center"> {{ banho[2] }} </td>
+                <td class="text-center"> {{ banho[3] }} </td>
+                {% if current_user.name == 'Tayla' %}
+                <td class="text-center"><input type="checkbox" id="{{ banho[0] }}" form="banhosdadosform"
+                                               name="{{ banho[0] }}, {{ banho[1] }}, {{ banho[2] }}, {{ banho[3] }}"
+                                               value="1"></td>
+                {% endif %}
+            </tr>
+
+        {% endfor %}
+        {% endif %}
+    </table>
+        {% if current_user.name == 'Tayla' %}
+        <div class="row mt-5">
+            <label>
+                <input type="submit" form="banhosdadosform">
+            </label>
+        </div>
+    {% endif %}
+    <!--/form-->
+</div>
+{% endblock %}

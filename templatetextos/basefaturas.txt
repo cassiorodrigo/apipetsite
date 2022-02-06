@@ -1,0 +1,24 @@
+Olá {nome}!
+
+  A PetFatura de {nomecao} chegou!
+
+  Valor creche: {valor}
+  Dias no Hotel: {diarias}
+  Total hotel: {diashotel}
+  Data Banhos: {databanhos}
+  Quantidade de Banhos: {banhos}
+  Total Banhos: {totalbanhos}
+  Produtos: {consumo}
+  Total Produtos: {valor_consumo}
+  Total da Fatura: {total}
+  Forma de Pagamento:
+
+         PIX: 39.938.754/0001-22
+         PicPay:
+             <a href="https://app.picpay.com/promotionsdetails/495825" id='picpay'>Pic Pay</a>
+         Transferência:
+             Pet Park
+             Banco Nubank
+             Ag.0001
+             C/C: 11466503-4
+             CNPJ: 39.938.754/0001-22
