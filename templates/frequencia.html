@@ -21,27 +21,43 @@
 </style>
 
 <body>
-
-<table id="formulariofreq" style="width:85%; margin-left:50px; margin-top:40px">
-    <thead>Formulario de Frequencia</thead>
-    <tr>
-        <td style="width:80%">Nome</td>
-        <td>Presente</td>
-    </tr>
-    {% for chegada in getchegadas() %}
-    <tr>
-        <td style="width:80%">
-            <label>
-                {{ chegada[1] }}
-            </label>
-        </td>
-        <td><input type="checkbox" value={{ chegada[1] }}></td>
-    </tr>
-    {% endfor %}
-
-</table>
-
-<button type="submit" style="margin-top:35px; margin-left:50px;">Enviar</button>
+<form method="post">
+    <div align="center">
+        <input type="checkbox" id="outrodia" onclick="var inone = document.querySelector('#dateselector');
+            if(this.checked){inone.hidden=false}else{inone.hidden=true}">
+        <label for="outrodia"> Enviar formulário para outro dia</label>
+    </div>
+    <div class="mb-5" id="dateselector" hidden="true">
+        <p>
+            <label for="datetimeinsert">Selectione o dia</label>
+            <input type="datetime-local" name="datetime" id="datetimeinsert">
+        </p>
+    </div>
+    <table class="mt-4" id="formulariofreq" name='presencadogs' style="width:85%; margin-left:50px; margin-top:40px">
+        <thead>Formulario de Frequencia</thead>
+        <tr>
+            <td style="width:80%">Nome</td>
+            <td>Presente</td>
+        </tr>
+        {% for dog in dogs %}
+        <tr>
+            <td>
+                <p>
+                    {{ dog[4] }}
+                </p>
+            </td>
+            <td align="center"><input type="checkbox" name='presencas' value={{ dog[-1] }}></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="mt-5 mb-2 ml-5" width="80%" align="center">
+        <input type="radio" id="hotel" name="crechehotel" value="hotel">
+        <label for="hotel">Hotel</label><br>
+        <input type="radio" id="creche" name="crechehotel" value="creche" checked>
+        <label for="creche">Creche</label><br>
+    </div>
+    <button type="submit" class='btn btn-info mb-5' style="margin-top:35px; margin-left:50px;">Enviar</button>
+</form>
 </body>
 {% endblock %}
 <!--

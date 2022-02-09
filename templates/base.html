@@ -63,6 +63,7 @@ p {
             {% if current_user.role != 'cliente' %}
             <li><a href="{{ url_for('banhos_pedidos') }}">Banhos</a></li>
             <li><a href="{{ url_for('homechegadas') }}">Chegadas</a></li>
+            <li><a href="{{ url_for('freq') }}">Formulario de Frequencia</a></li>
             <li><a href="{{ url_for('clockin') }}">Clock-in</a></li>
             {% endif %}
             {% if current_user.role == 'admin' or current_user.role == 'superadmin'%}

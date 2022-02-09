@@ -261,10 +261,31 @@ def horastrabalhadas():
 def freq():
     if request.method == "GET":
         if current_user.role != 'cliente':
-            return render_template("frequencia.html")
+            with DatabaseCaes() as dbcaes:
+                dogs = dbcaes.get_caes()
+            return render_template("frequencia.html", dogs=dogs)
     else:
         #TODO manejar o formulario aqui
-        print(request.form.to_dict())
+        valores = request.form.listvalues()
+        valores = list(valores)
+        timestamp = valores[0][0]
+        if timestamp == '':
+            timestamp = datetime.timestamp(datetime.now())
+        # print(request.form.to_dict())
+        # for e in valores:
+        #     print(e)
+        for each in valores[1]:
+            with PresencasDB() as pre:
+                with DatabaseCaes() as dbc:
+                    res = dbc.get_one_dog(each)
+                    nomecao = res[4]
+                pre.insert_presencas(timestamp,
+                                     valores[2][0],
+                                     nomecao,
+                                     each
+                                     )
+        flask.flash('Caes inseridos com sucesso! Muito Obrigado', f'alert-info {flashclass}')
+        return redirect('home')
 
 
 @app.route("/clockin", methods=["GET", "POST"])
@@ -528,7 +549,6 @@ api.add_resource(PagamentosRegistrar, f"/pagamentos/",
 
 app.jinja_env.globals["getchegadas"] = ChegadasPrevistas().get
 app.jinja_env.globals["getbanhos"] = BanhosPedidos().get
-app.jinja_env.globals["getclientes"] = DatabaseCaes().get_caes()
 app.jinja_env.filters["get_values"] = get_values
 
 

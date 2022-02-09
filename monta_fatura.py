@@ -1,7 +1,12 @@
+import calendar
 import sqlite3
 import uuid
 from databasehandler import FaturasDB, DatabaseCaes
-
+from calendar import month_abbr, different_locale
+from datetime import date
+mes = calendar.month_abbr[date.today().month]
+ano = calendar.month_abbr[date.today().year]
+tabela_do_mes = f'{mes}{ano}'
 
 def monta_fatura(token):
     with FaturasDB() as fat:
@@ -42,11 +47,11 @@ def assign_token():
 
 def link_pid_informacoes():
     with DatabaseCaes() as dbc:
-        pids = """
+        pids = f"""
         SELECT public_id, NOME_CAO FROM inscricoes
         """
-        update = '''
-        UPDATE fev2022 SET PUBLIC_ID=? WHERE dog=?
+        update = f'''
+        UPDATE {tabela_do_mes} SET PUBLIC_ID=? WHERE dog=?
         '''
         listaexecucoes = list()
         dbc.c.execute(pids)

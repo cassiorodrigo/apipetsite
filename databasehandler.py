@@ -3,19 +3,7 @@ import sqlite3
 from flask_bcrypt import generate_password_hash, check_password_hash
 from datetime import datetime
 import uuid
-import locale
-locale.setlocale(locale.LC_ALL, 'pt_br')
-
-
-def generate_timestamp(datastring):
-    data = datastring.split("-")
-    if len(data[0]) <= 2:
-        data.reverse()
-    else:
-        pass
-    data = datetime.timestamp(
-    datetime(int(data[0]), int(data[1]), int(data[2])))
-    return data
+from calendar import month_abbr, different_locale
 
 
 class ConectDb:
@@ -160,8 +148,6 @@ class Banhos(ConectDb):
         self.conn.commit()
 
     def inserir_banho(self, nome, data_pedido, data_banho, tamanho_cao='medio'):
-        data_pedido = generate_timestamp(data_pedido)
-        data_banho = generate_timestamp(data_banho)
 
         query = """
         INSERT INTO banhos(NOMECAO, DATAPEDIDO, DATABANHO, TAMANHOCAO) values(?, ?, ?, ?)
@@ -170,7 +156,6 @@ class Banhos(ConectDb):
         self.conn.commit()
 
     def deletar_banho(self, nome, data):
-        data = generate_timestamp(data)
         query = """
         DELETE FROM banhos WHERE(NOMECAO==:nomecao AND DATABANHO==:databanho)
         """
@@ -187,7 +172,6 @@ class Banhos(ConectDb):
         return res
 
     def update_banho_tomado(self, nome, data_banho, banho_tomado: bool):
-        data_banho = generate_timestamp(data_banho)
 
         dados = banho_tomado, nome, data_banho
         update = """
@@ -219,8 +203,6 @@ class Chegadas(ConectDb):
         self.conn.commit()
 
     def insert_new_arrival(self, nomecao, chegada, saida, adaptacao):
-        chegada = generate_timestamp(chegada)
-        saida = generate_timestamp(saida)
         data = nomecao, chegada, saida, adaptacao
 
         self.c.execute("""
@@ -245,7 +227,6 @@ class Chegadas(ConectDb):
         return resultado_busca
 
     def delete_arrival(self, nome, chegada):
-        chegada = generate_timestamp(chegada)
         self.c.execute("""
         DELETE FROM chegadas WHERE(NOMECAO ==:quecao and DATACHEGADA ==:quedata)
         """, {"quecao": nome, "quedata": chegada})
@@ -400,15 +381,15 @@ class DatabaseCaes(ConectDb):
         return res
 
     def get_one_dog(self, *args):
-        dados = [args[0] for _ in range(3)]
+        dados = [args[0] for _ in range(4)]
 
         """
         :param kwargs:
-            keys: EMAIL, TUTOR, NOME_CAO
+            keys: EMAIL, TUTOR, NOME_CAO, public_id
         :return:
         """
-        q = "SELECT * FROM inscricoes WHERE(EMAIL=? or TUTOR=? or NOME_CAO=?)"
-        res = self.c.execute(q, dados).fetchall()
+        q = "SELECT * FROM inscricoes WHERE(EMAIL=? or TUTOR=? or NOME_CAO=? or public_id=?)"
+        res = self.c.execute(q, dados).fetchone()
 
         return res
 
@@ -420,11 +401,9 @@ class DatabaseCaes(ConectDb):
         """
         try:
             value = json_todos_caes
-            chegada = generate_timestamp(value["entrada_hotel"])
-            saida = generate_timestamp(value["entrada_hotel"])
             dados = value["tutor"], value["email"], value["endereco"],\
             value["nome_cao"], value["nascimento_cao"], \
-            value["dias_por_semana"], chegada, saida, \
+            value["dias_por_semana"], \
             value["vet"], value["tel_vet"], value["cuidados_especiais"], value["raca"],\
             value["tel_tutor"], value["ativo"]
             self.conn.execute('''
@@ -513,7 +492,6 @@ class Pagamentos(ConectDb):
         self.conn.commit()
 
     def inserir_pagamento(self, tutor, cao, valor, data_pagamento):
-        data_pagamento = generate_timestamp(data_pagamento)
         valores = tutor, cao, valor, data_pagamento
         inserir = """
         INSERT OR IGNORE INTO pagamentos(
@@ -524,7 +502,6 @@ class Pagamentos(ConectDb):
         self.conn.commit()
 
     def update(self, tutor, cao, valor, data_pagamento):
-        data_pagamento = generate_timestamp(data_pagamento)
         dados = valor, data_pagamento, tutor, cao
         atualizar = """
         UPDATE pagamentos SET (VALOR, DATA_PAGAMENTO) = (?, ?) WHERE(NOME_TUTOR = ? AND NOME_CAO = ?)
@@ -543,7 +520,6 @@ class Pagamentos(ConectDb):
         return self.c.execute(retrieve).fetchall()
 
     def delete_entry(self, nome, cao, valor, data):
-        data = generate_timestamp(data)
         valores = nome, cao, valor, data
         req_del = """
         DELETE FROM pagamentos WHERE(NOME_TUTOR = ? AND NOME_CAO = ? AND VALOR = ? AND DATA_PAGAMENTO = ?)
@@ -562,19 +538,24 @@ class PresencasDB(ConectDb):
                _ID INTEGER PRIMARY KEY AUTOINCREMENT,
                DATA TEXT,
                TIPO TEXT,
-               NOMECAO TEXT
+               NOMECAO TEXT,
+               public_id TEXT
                )
                """)
         self.conn.commit()
 
-    def insert_presencas(self, data, tipo, nome):
-        data = generate_timestamp(data)
-        dados = data, tipo, nome
-        q = """
-        INSERT OR IGNORE INTO presencas(DATA, TIPO, NOMECAO) VALUES(?,?,?)
-        """
-        self.c.execute(q, dados)
-        self.conn.commit()
+    def insert_presencas(self, data, tipo, nome, public_id):
+        try:
+            dados = data, tipo, nome, public_id
+            q = """
+            INSERT OR IGNORE INTO presencas(DATA, TIPO, NOMECAO, public_id) VALUES(?,?,?,?)
+            """
+            self.c.execute(q, dados)
+            self.conn.commit()
+            return True
+        except Exception as err:
+            print(f"Um erro acontreceu no database handler linha 546{err}")
+            return False
 
     def getpresencas(self):
         q = """
@@ -596,10 +577,15 @@ class FaturasDB(ConectDb):
             self.mes = kwargs['mes']
             self.ano = kwargs['ano']
         except KeyError:
-            self.mes = calendar.month_abbr[datetime.now().month]
-            self.ano = datetime.now().year
+            try:
+                with different_locale("pt_BR.utf-8"):
+                    self.mes = calendar.month_abbr[datetime.now().month]
+                    self.ano = datetime.now().year
+                    self.nametabela = f"{self.mes}{self.ano}"
+            except ValueError:
+                print(f'[FROM DATABASEHANDLER] ValueError. Setando o nome da tabela estaticamente')
+                self.nametabela = 'fev2022'
 
-        self.nametabela = f"{self.mes}{self.ano}"
 
         super().__enter__()
         # create = f"""
