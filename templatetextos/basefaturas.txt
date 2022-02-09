@@ -1,16 +1,15 @@
-Olá {nome}!
+Olá {}!
 
-  A PetFatura de {nomecao} chegou!
+  A PetFatura de {} chegou!
 
-  Valor creche: {valor}
-  Dias no Hotel: {diarias}
-  Total hotel: {diashotel}
-  Data Banhos: {databanhos}
-  Quantidade de Banhos: {banhos}
-  Total Banhos: {totalbanhos}
-  Produtos: {consumo}
-  Total Produtos: {valor_consumo}
-  Total da Fatura: {total}
+  Valor creche: R$ {}
+  Dias no Hotel: {}
+  Total hotel:
+  Data Banhos: {}
+  Quantidade de Banhos: {}
+  Total Banhos:
+  Total Produtos: {}
+  Total da Fatura: R$ {}
   Forma de Pagamento:
 
          PIX: 39.938.754/0001-22

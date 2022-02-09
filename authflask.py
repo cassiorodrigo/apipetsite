@@ -8,10 +8,8 @@ from databasehandler import DatabaseUsuarios, ConectDb
 
 
 def getuser(id):
-    print(id)
     with ConectDb() as db:
         res = db.c.execute("SELECT * FROM usuarios WHERE(PUBLIC_ID = ?)", [id,]).fetchone()
-        print(res)
         return User(res[1], res[3], res[4], res[2], res[5])
 
 

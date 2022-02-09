@@ -3,9 +3,11 @@
 Phase 1:
 
     Create a website with the relative endpoints for later consuming via mobile app
+    DONE
 
 Phase 2:
-    (...)
+    Add BRCode to invoice
+    DONE
 
 Future Steps:
     reshape the database and the way that invoice is done.
@@ -15,3 +17,4 @@ Future Steps:
     Add BRCode to Invoice
     Create a button that copies the Pix key to the clipboard
     Create a form for Banhos with recurrent service option
+    create a page for admin to edit faturas,  worked hours and so on...

@@ -6,9 +6,13 @@ from datetime import datetime, timedelta, timezone
 from databasehandler import DatabaseUsuarios, DatabaseCaes, Chegadas, Banhos, Pagamentos, PresencasDB,\
     FaturasDB, HorastrabalhadasDB, ClockRecorder
 from flask_login import login_user, login_required, LoginManager, current_user, logout_user
+from edit_tables import Connection
 from flask_bootstrap import Bootstrap
 from authflask import Registrar, Logar, User, getuser
 import base64
+import locale
+
+locale.setlocale(locale.LC_ALL, 'pt-br')
 CHAVE = os.getenv("chaveapi")
 app = Flask(__name__)
 app.secret_key = CHAVE
@@ -34,10 +38,90 @@ def unauthorized():
     return redirect(url_for("login"))
 
 
+class Tabelas(Resource):
+    def get(self):
+        argumentos = request.args.to_dict()
+        with Connection() as conn:
+            if ['tabela', 'coluna', 'filtro'] == list(argumentos.keys()):
+                dados = {
+                    'headers': conn.c.execute(f'PRAGMA table_info({argumentos.get("tabela")})').fetchall(),
+                    'dados': conn.c.execute(f'''select {argumentos.get('coluna')} 
+                    from {argumentos.get('tabela')}''').fetchall()
+                }
+
+                return jsonify(dados)
+
+            elif ['tabela', 'coluna'] == list(argumentos.keys()):
+                return conn.c.execute(f'select {argumentos.get("coluna")} from {argumentos.get("tabela")}').fetchall()
+
+            if 'tabela' in argumentos.keys():
+                return jsonify(conn.c.execute(f'PRAGMA table_info({argumentos.get("tabela")})').fetchall())
+
+    def post(self):
+        print(request)
+        with Connection() as conn:
+            pass
+            # conn.c.execute('SELECT * FROM ')
+        return redirect(url_for('edit_table'))
+
+
+api.add_resource(Tabelas, "/edit")
+
+
+def get_values(*args, **kwargs):
+    print(kwargs)
+    print(args)
+
+@app.route("/edit_table", methods=["GET", "POST"])
+def edit_table(*args, **kwargs):
+    # resposta = request.values.getlist('resposta')
+    # headers = request.values.getlist('headers')
+    # print(f"[FROM edit_table] request.values é {request.values.get('resposta')}")
+    if request.method == 'GET':
+        valores = None
+
+        with Connection() as conn:
+            tabelas = conn.get_nome_tabelas()
+        return render_template('edit_databases.html', tabelas=tabelas, valores=valores)
+    else:
+        valores = list(request.form.listvalues())
+        tabela = valores[0][0]
+        colunas = valores[1]
+        if len(valores) > 2:
+            whereclause = valores[2]
+            wherequery = f'WHERE {colunas} is like "%{whereclause}%"'
+        else:
+            wherequery = ''
+
+        if len(colunas) > 1:
+            colunas = ','.join(colunas)
+        else:
+            colunas = colunas[0]
+
+        tobereturned = f'''
+        SELECT {colunas} FROM {tabela} {wherequery}
+        '''
+        with Connection() as conn:
+            resposta = conn.c.execute(tobereturned).fetchall()
+        to_be_sent = [colunas, resposta]
+
+    #     flask.flash(f"tabela: {tabela}   coluna: {coluna}", f"alert-info {flashclass}")
+        return redirect(url_for('edit_table', data=to_be_sent))
+        # return redirect(url_for("edit_table", tabela=tabela, colunas=colunas))
+
+
 @app.get("/links")
 def links():
     flask.flash("Você não deveria ver essa página", f"alert alert-info alert-dismissible show")
     return render_template("links.html")
+
+
+def string_fat(token):
+    with FaturasDB() as fat:
+        res = fat.get_fatura(token)
+        with open('templatetextos/basefaturas.txt', 'r', encoding='UTF-8') as file:
+            reader = file.read()
+            return reader.format(*res)
 
 
 @app.route('/fatura', methods=["GET", "POST"])
@@ -53,19 +137,25 @@ def fatura():
                 print(terror)
             if faturas_token is not None:
                 try:
-                    result = str(fdb.get_fatura(faturas_token)[0])
+                    print(f'[FROM FATURA LINHA 137] print token {faturas_token}')
+                    result = string_fat(faturas_token)
+                    valor = fdb.get_valor_total(faturas_token)[0]
+
+
                 except TypeError as terror2:
                     flask.flash(str(terror2), f"alert alert-info {flashclass}")
                     result = ''
+                    valor = 1
                 get_all_links = ''
             else:
                 get_all_links = fdb.get_w_links()
                 result = ''
+                valor = 1
 
         chave_pix = "11c358f9-a42d-434f-b791-f176de78f215"
 
-        qrpix = bytes(QRPix(chave_pix, 1.0, 'CASSIO RODRIGO D ANTONIO ', 'SAO PAULO', "05409000", 'Asercolocadodepois'))
-        copiaecola = QRPix(chave_pix, 1.00, 'CASSIO RODRIGO D ANTONIO ', 'SAO PAULO', "05409000", 'Asercolocadodepois').salvar_qrcode()
+        qrpix = bytes(QRPix(chave_pix, float(f"{valor:.2f}"), 'CASSIO RODRIGO D ANTONIO ', 'SAO PAULO', "05409000", 'Asercolocadodepois'))
+        copiaecola = QRPix(chave_pix, float(f"{valor:.2f}"), 'CASSIO RODRIGO D ANTONIO ', 'SAO PAULO', "05409000", 'Asercolocadodepois').salvar_qrcode()
         res = base64.b64encode(qrpix)
 
         return render_template('fatura.html', dog_fat=result, links=get_all_links, imagem=res.decode('UTF-8'),
@@ -439,6 +529,7 @@ api.add_resource(PagamentosRegistrar, f"/pagamentos/",
 app.jinja_env.globals["getchegadas"] = ChegadasPrevistas().get
 app.jinja_env.globals["getbanhos"] = BanhosPedidos().get
 app.jinja_env.globals["getclientes"] = DatabaseCaes().get_caes()
+app.jinja_env.filters["get_values"] = get_values
 
 
 if __name__ == "__main__":

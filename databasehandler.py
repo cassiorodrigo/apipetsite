@@ -1,7 +1,10 @@
+import calendar
 import sqlite3
 from flask_bcrypt import generate_password_hash, check_password_hash
 from datetime import datetime
 import uuid
+import locale
+locale.setlocale(locale.LC_ALL, 'pt_br')
 
 
 def generate_timestamp(datastring):
@@ -26,7 +29,8 @@ class ConectDb:
         return self
 
     def __exit__(self, *args):
-        print(f"Exited with args: {args}")
+        if args[0]:
+            print(f"Exited with args: {args}")
         self.conn.close()
 
 
@@ -49,20 +53,20 @@ class ClockRecorder(ConectDb):
 
     def insert_clockin(self, username, email):
         tudo = self.c.execute("SELECT COUNT(*) FROM clock").fetchone()[0]
-        print(tudo)
+        # print(tudo)
         tstamp = datetime.timestamp(datetime.now())
         if tudo == 0:
             self.c.execute("INSERT INTO clock(USERNAME, EMAIL, CLOCKIN) VALUES(?,?,?)",[username, email, tstamp])
         else:
             last_login_id = self.c.execute("SELECT MAX(_ID) FROM clock WHERE(USERNAME=?)", [username,]).fetchone()[0]
-            print(f"LASTLOGIN_ID: {last_login_id}")
+            # print(f"LASTLOGIN_ID: {last_login_id}")
             if last_login_id is None:
-                print('last login id is none')
+                # print('last login id is none')
                 self.c.execute("INSERT INTO clock(USERNAME, EMAIL, CLOCKIN) VALUES(?,?,?)", [username, email, tstamp])
                 self.conn.commit()
                 return True
             last_login = self.c.execute("SELECT * FROM clock WHERE(_ID=?)", [last_login_id,]).fetchone()
-            print(f"[LASTLOGIN] {last_login}")
+            # print(f"[LASTLOGIN] {last_login}")
             if last_login[3] is not None and last_login[4] is None:
                 self.insert_clockout(last_login_id)
             elif last_login[3] is not None and last_login[4] is not None:
@@ -106,7 +110,7 @@ class ClockRecorder(ConectDb):
                     """
             last_entry = self.c.execute(clocked, [email, ]).fetchone()[0]
             clockedinout = self.c.execute("SELECT CLOCKIN, CLOCKOUT FROM clock WHERE(_ID=?)", [last_entry,]).fetchone()
-            print(clockedinout)
+            # print(clockedinout)
             if clockedinout[0] is not None and clockedinout[1] is None:
                 return True  # True is logged FALSE is not logged
             return False
@@ -310,7 +314,7 @@ class DatabaseUsuarios(ConectDb):
         except Exception as err:
             error = str(err).split(".")[1]
             DatabaseUsuarios.err = f"{error} Já cadastrado. Por favor, escolha outro {error}"
-            print(self.err)
+            # print(self.err)
             return False
 
     # def atualizar_senha(self, token:int, email: str, novasenha: str, usuario: str):
@@ -456,7 +460,7 @@ class DatabaseCaes(ConectDb):
         """
         try:
             valores = jdados['cliente'], jdados['dias_por_semana'], jdados['valor_a_receber'], jdados['dia_de_pagamento'], jdados['ativo'], jdados['tutor']
-            print(valores)
+            # print(valores)
             _made = self.c.execute('''
             INSERT INTO ativos (Cliente, 'dias por semana', 'Valor a receber', 'Dia de pagamento', Ativo, Tutor)
             VALUES(?,?,?,?,?,?)
@@ -587,23 +591,30 @@ class PresencasDB(ConectDb):
 
 
 class FaturasDB(ConectDb):
-    def __init__(self):
+    def __init__(self, **kwargs):
+        try:
+            self.mes = kwargs['mes']
+            self.ano = kwargs['ano']
+        except KeyError:
+            self.mes = calendar.month_abbr[datetime.now().month]
+            self.ano = datetime.now().year
+
+        self.nametabela = f"{self.mes}{self.ano}"
+
         super().__enter__()
-        # self.conn = sqlite3.connect("dados/administracao.db")
-        # self.c = self.conn.cursor()
-        create = """
-        CREATE TABLE IF NOT EXISTS faturas(
-        _ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        TIMESTAMP REAL,
-        NOMECAO TEXT,
-        TUTOR TEXT,
-        TELEFONE TEXT,
-        FATURA TEXT,
-        WLINK TEXT,
-        TOKEN TEXT UNIQUE
-        )"""
-        self.c.execute(create)
-        self.conn.commit()
+        # create = f"""
+        # CREATE TABLE IF NOT EXISTS {self.nametabela}(
+        # _ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        # TIMESTAMP REAL,
+        # NOMECAO TEXT,
+        # TUTOR TEXT,
+        # TELEFONE TEXT,
+        # FATURA TEXT,
+        # WLINK TEXT,
+        # TOKEN TEXT UNIQUE
+        # )"""
+        # self.c.execute(create)
+        # self.conn.commit()
 
     def get_banhos(self):
         pass
@@ -611,8 +622,24 @@ class FaturasDB(ConectDb):
     def get_diarias(self):
         pass
 
+    def set_get_valor_total(self):
+        registrados = self.c.execute(f"SELECT TOKEN FROM {self.nametabela}").fetchall()
+        ids = self.c.execute(f"SELECT dog FROM {self.nametabela}").fetchall()
+        dados = dict()
+        for eid in ids:
+            token = uuid.uuid4().hex
+            while token in registrados:
+                token = uuid.uuid4().hex
+            dados[token] = eid[0]
+        itens = list(dados.items())
+        print(itens)
+        self.c.executemany(F"""
+        UPDATE {self.nametabela} SET TOKEN=? WHERE Dog=?
+        """, itens)
+        self.conn.commit()
+
     def insert_data(self, nomecao, tutor, fatura, wlink, telefone):
-        tokens = self.c.execute("SELECT TOKEN FROM faturas").fetchall()
+        tokens = self.c.execute(f"SELECT TOKEN FROM {self.nametabela}").fetchall()
         token = uuid.uuid4().hex
         try:
             for token_registrado in tokens[0]:
@@ -632,27 +659,56 @@ class FaturasDB(ConectDb):
         return {nomecao: token}
 
     def get_fatura(self, token):
-        q = """
-        SELECT TUTOR, 
-        NOMECAO,
-        TAMANHO_CAO,
-        MENSALIDADE, 
-        DIAS_HOTEL,
-        DATABANHOS,
-        BANHOS, 
-        TOTAL 
-        FROM faturas WHERE(TOKEN=?)
+        q = f"""
+        SELECT 
+        Tutor, 
+        dog,
+        valor_creche,
+        dias_hotel,
+        databanho,
+        quantidadebanhos,
+        valorconsumo,
+        total 
+        FROM {self.nametabela} WHERE(TOKEN=?)
+        """
+        res = self.c.execute(q, [token,]).fetchone()
+        print(f'[from databasehandler] res = {res}')
+        return res
+
+    def get_valor_total(self, token):
+        q = F"""
+        SELECT total FROM {self.nametabela} WHERE TOKEN=?
         """
         res = self.c.execute(q, [token,]).fetchone()
         return res
 
     def get_w_links(self):
-        q = """
-        SELECT NOMECAO, TOKEN from faturas;
+        q = f"""
+        SELECT Dog, TOKEN from {self.nametabela};
         """
         res = self.c.execute(q).fetchall()
         return res
 
+    def update_total(self):
+        q = f"""
+        SELECT Dog, public_id, token, valor_creche, dias_hotel, 
+        valorconsumo  
+        from {self.nametabela}"""
+        con = sqlite3.connect('dados/administracao.db')
+        con.row_factory = sqlite3.Row
+        c = con.cursor()
+        c.execute(q)
+        tokentotal = list()
+        for e in c:
+            lista = [0 if each == None else each for each in e[3:]]
+            lista[1] *= 60
+            tokentotal.append((e['token'], sum(lista)))
+            # total = e["valor_creche"]  # +e['dias_hotel']*50+e['quantidadebanhos']*40,+e['valorconsumo']
+            # print(total)
+        for e in tokentotal:
+
+            c.execute(F'UPDATE {self.nametabela} SET total=? WHERE TOKEN=?', [e[1], e[0]])
+        con.commit()
 
 class HorastrabalhadasDB(ConectDb):
     def __init__(self):
@@ -694,8 +750,17 @@ class HorastrabalhadasDB(ConectDb):
 
 if __name__ == '__main__':
 
-    with Chegadas() as arr:
-        print(arr.check_arrivals())
+    with FaturasDB() as fat:
+        fat.update_total()
+        # res = fat.get_fatura("a6e1400783904b818326f8932a3e7124")
+        res = print(fat.get_valor_total("a6e1400783904b818326f8932a3e7124"))
+        # print(fat.get_w_links())
+
+        # print(res)
+        # fat.set_token()
+
+    # with Chegadas() as arr:
+    #     print(arr.check_arrivals())
 
     # with ClockRecorder() as db:
     #     print(db.prestador_state('cassiorodrigo@gmail.com'))

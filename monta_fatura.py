@@ -3,26 +3,16 @@ import uuid
 from databasehandler import FaturasDB, DatabaseCaes
 
 
-def get_data_from_db(token):
-
-    with FaturasDB() as fat:
-        q = 'SELECT * FROM faturas WHERE TOKEN=?'
-        res = fat.c.execute(q, [token,]).fetchone()
-        return res
-
-
 def monta_fatura(token):
     with FaturasDB() as fat:
-        fat.get_fatura(token)
         with open('templatetextos/basefaturas.txt', 'r') as file:
-            pass
+            base_fatura = file.read()
+            dog = fat.get_fatura(token)
+            print(base_fatura.format(*dog))
 
 
 
 def create_fatura():
-    pass
-
-def monta_fatura(data):
     pass
 
 
@@ -44,13 +34,19 @@ def assign_public_id():
         c.executemany(insert, execucoes)
         dbdog.commit()
 
+
+def assign_token():
+    with FaturasDB() as fat:
+        fat.set_token()
+
+
 def link_pid_informacoes():
     with DatabaseCaes() as dbc:
         pids = """
         SELECT public_id, NOME_CAO FROM inscricoes
         """
         update = '''
-        UPDATE informacoes SET PUBLIC_ID=? WHERE dog=?
+        UPDATE fev2022 SET PUBLIC_ID=? WHERE dog=?
         '''
         listaexecucoes = list()
         dbc.c.execute(pids)
@@ -86,8 +82,8 @@ def link_pid_faturas():
 
 
 if __name__ == "__main__":
-    # link_pid_informacoes()
-    link_pid_informacoes()
+    # monta_fatura(token='a6e1400783904b818326f8932a3e7124')
+    assign_token()
     # print(assign_public_id())
     # resultado = get_data_from_db("f0e8e5e0027e465e931d0d72b750b47d")
     # print(resultado)

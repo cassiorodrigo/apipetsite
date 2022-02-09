@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if current_user.role == 'superadmin' %}
+<div class="row">
+    <div class="col-l-6">
+        <form method="post">
+            <label>Escolha uma coluna</label><br>
+                <div class="col-m-6 mb-3">
+                    <select name="tabelas" id="tabelas" onchange="mostracolunas(this.value)">
+                        <option name="none" value="none">Selecione uma tabela</option>
+                        {% for nametabela in tabelas %}
+                            <option name="{{ nametabela }}" value="{{ nametabela[0] }}"> {{ nametabela[0] }} </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="cols">Escolha uma coluna para atualizar</label><br>
+                    <select name="colunas" id="cols" multiple=true class="mb-5" onchange="mostrardados(this.value)">
+                        <option value="none"> Selecione as colunas </option>
+                    </select><br>
+                    <label for="valores" class="mt-6">
+                        Selecione os valores
+                    </label>
+                    <select name="valores" id="vals" multiple=true>
+                    </select>
+                </div>
+            <input type="submit" class="alert alert-info"><br>
+        </form>
+
+    </div>
+</div>
+
+        <!--input type="button" class="alert alert-info" onclick="colunas.hidden=false" value="Mostrar Colunas"--><br>
+<h3>{{ valores }}</h3>
+{% if valores %}
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+</div>
+<script>
+async function mostracolunas(tabela){
+    var campo = document.querySelector('#cols')
+    while (campo.ChildElementCount > 1) {
+        campo.removeChild(campo.firstChild)
+    }
+    req = new Request(`edit?tabela=${tabela}`)
+    const response = await fetch(req);
+    const resultado = await response.json();
+    for (e of resultado) {
+        // console.log(e[1])
+        var opt = document.createElement('option')
+        opt.value = e[1]
+        opt.innerText = e[1]
+        campo.appendChild(opt);
+    }
+
+    return resultado
+    };
+
+async function mostrardados(coluna){
+    var tabela = document.querySelector('#tabelas').value
+    var vals = document.querySelector("#vals")
+
+    const url = `edit?tabela=${tabela}&coluna=${coluna}`
+    const response = await fetch(url)
+    const rj = await response.json()
+    for (let e of rj) {
+        var opcoes = document.createElement("option")
+        opcoes.value = e[0]
+        opcoes.innerText = e[0]
+        vals.appendChild(opcoes);
+    }
+}
+
+</script>
+{% endif %}
+{% endblock %}
