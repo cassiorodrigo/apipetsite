@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+<center>
+    <div class="col-m-6" width="50%">
+        <form method="post" action="/formulariorecebido" style="width:50%">
+            {% for campo in form %}
+                <div class="col-m-6">
+                    {{ wtf.form_field(campo) }}
+                </div>
+            {% endfor %}
+
+        </form>
+    </div>
+</center>
+
+{% endblock %}

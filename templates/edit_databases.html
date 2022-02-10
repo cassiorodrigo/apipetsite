@@ -1,58 +1,57 @@
 {% extends 'base.html' %}
 {% block content %}
 {% if current_user.role == 'superadmin' %}
-<div class="row">
-    <div class="col-l-6">
-        <form method="post">
-            <label>Escolha uma coluna</label><br>
-                <div class="col-m-6 mb-3">
-                    <select name="tabelas" id="tabelas" onchange="mostracolunas(this.value)">
-                        <option name="none" value="none">Selecione uma tabela</option>
-                        {% for nametabela in tabelas %}
-                            <option name="{{ nametabela }}" value="{{ nametabela[0] }}"> {{ nametabela[0] }} </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div>
-                    <label for="cols">Escolha uma coluna para atualizar</label><br>
-                    <select name="colunas" id="cols" multiple=true class="mb-5" onchange="mostrardados(this.value)">
-                        <option value="none"> Selecione as colunas </option>
-                    </select><br>
-                    <label for="valores" class="mt-6">
-                        Selecione os valores
-                    </label>
-                    <select name="valores" id="vals" multiple=true>
-                    </select>
-                </div>
-            <input type="submit" class="alert alert-info"><br>
-        </form>
-
+<center>
+    <div class="row">
+        <div class="col-xl-6">
+            <form method="post">
+                <label>Escolha uma coluna</label><br>
+                    <div class="col-xl-6 mb-3">
+                        <select name="tabelas" id="tabelas" onchange="mostracolunas(this.value)">
+                            <option name="none" value="none">Selecione uma tabela</option>
+                            {% for nametabela in tabelas %}
+                                <option name="{{ nametabela }}" value="{{ nametabela[0] }}"> {{ nametabela[0] }} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="cols">Escolha uma coluna para atualizar</label><br>
+                        <select name="colunas" id="cols" multiple=true class="mb-5" onchange="mostrardados(this.value)">
+                            <option value="none"> Selecione as colunas </option>
+                        </select><br>
+                        <label for="valores" class="mt-6">
+                            Selecione os valores
+                        </label>
+                        <select name="valores" id="vals" multiple=true>
+                        </select>
+                    </div>
+                <input type="submit" class="alert alert-info mt-3 "><br>
+            </form>
+        </div>
     </div>
-</div>
-
+</center>
         <!--input type="button" class="alert alert-info" onclick="colunas.hidden=false" value="Mostrar Colunas"--><br>
-<h3>{{ valores }}</h3>
-{% if valores %}
-            <table>
-                <thead>
+<center>
+    <h3>{{ valores }}</h3>
+    {% if valores %}
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+            </thead>
+
+            <tbody>
                     <tr>
                         <td>
                         </td>
                     </tr>
-                </thead>
+            </tbody>
+        </table>
+    {% endif %}
+</center>
 
-                <tbody>
-                        <tr>
-                            <td>
-                            </td>
-                        </tr>
-                </tbody>
-            </table>
-        {% endif %}
-    </div>
-</div>
-<div class="row">
-</div>
 <script>
 async function mostracolunas(tabela){
     var campo = document.querySelector('#cols')

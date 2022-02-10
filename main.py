@@ -8,7 +8,7 @@ from databasehandler import DatabaseUsuarios, DatabaseCaes, Chegadas, Banhos, Pa
 from flask_login import login_user, login_required, LoginManager, current_user, logout_user
 from edit_tables import Connection
 from flask_bootstrap import Bootstrap
-from authflask import Registrar, Logar, User, getuser, Adaptacao
+from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao
 import base64
 
 CHAVE = os.getenv("chaveapi")
@@ -65,6 +65,11 @@ class Tabelas(Resource):
 
 api.add_resource(Tabelas, "/edit")
 
+
+@app.route('/inscricao', methods=["GET", "POST"])
+def inscricao():
+    form = Inscricao()
+    return render_template('inscricoes.html', form=form)
 
 def get_values(*args, **kwargs):
     print(kwargs)
@@ -224,7 +229,7 @@ def login():
 def welcome():
     # flask.flash(f"Usuario: {current_user.name}", f"alert alert-danger {flashclass}")
     if current_user.is_authenticated:
-        return redirect(url_for('home'), usuario=current_user.username)
+        return redirect(url_for('home',  usuario=current_user.username))
 
     return render_template('base.html')
 
@@ -291,7 +296,7 @@ def freq():
                                      each
                                      )
         flask.flash('Caes inseridos com sucesso! Muito Obrigado', f'alert-info {flashclass}')
-        return redirect(url_for('home'))
+        return redirect(url_for('welcome', username=current_user.username))
 
 
 @app.route("/clockin", methods=["GET", "POST"])

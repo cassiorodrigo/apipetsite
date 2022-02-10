@@ -82,3 +82,31 @@ class Adaptacao(FlaskForm):
     date = DateField()
     submit = SubmitField("Enviar")
 
+
+class Inscricao(FlaskForm):
+    nome = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Nome Tutor"})
+    dog = StringField(validators=[Length(min=3)], render_kw={"placeholder": "Nome Cao"})
+    raca = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Raça"})
+    email = EmailField(validators=[Email()], render_kw={"placeholder": "Email"})
+    telefone = StringField(validators=[Length(min=10, max=12, message='Telefone com DDD')],
+                           render_kw={"placeholder": "Telefone ex.: 27999999999"})
+    endereco = StringField(validators=[Length(min=7, max=150)], render_kw={'placeholder': "Endereço"})
+    diretrizes = TextAreaField(render_kw={"placeholder": "Orientações para estadia"})
+    vacinado = BooleanField(label='Vacinado')
+    vermifugado = BooleanField(label='Vermifugado')
+    castrado = BooleanField(label='Castrado')
+    crechehotel = RadioField(label='Adaptação para crehce ou hotel?', choices=["Creche", 'Hotel', 'Day Care'])
+    dataadaptacao = DateField(label='Dia da adaptação')
+    checkin = DateField(label='Data do Check-in')
+    checkout = DateField(label='Data do Check-out')
+    dias_por_semana = RadioField(label="Se a inscrição for para a creche, quantos dias por semana?",
+                                 choices=[1,2,3,4,5,6])
+    nascimento_cao = StringField(label="Data de nascimento do cão: ")
+    historico_agressividade = TextAreaField(render_kw={"placeholder":'Descreva cuidados necessários com agressividade contra humanos ou outros cães'})
+    clinicavet = StringField(label='Em caso de emergência, qual a clínica veterinária deveremos contactar?')
+    telclinicavet = StringField(label='Qual o telefone da clínica veterinária?')
+
+    submit = SubmitField("Enviar")
+
+
+
