@@ -199,7 +199,36 @@ class Chegadas(ConectDb):
         UNIQUE(NOMECAO, DATACHEGADA)
         )
         """
+        create_adaptacao = """
+        CREATE TABLE IF NOT EXISTS adaptacao(
+        _ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        TUTOR TEXT,
+        DOG TEXT,
+        DATACHEGADA TEXT,
+        RACA TEXT,
+        TELEFONE TEXT,
+        EMAIL TEXT,
+        DIRETRIZES TEXT,
+        CRECHEHOTEL INTEGER,
+        UNIQUE(DOG, DATACHEGADA)
+        )
+        """
         self.c.execute(create)
+        self.c.execute(create_adaptacao)
+        self.conn.commit()
+
+    def insert_adaptacao(self, **kwargs):
+
+        """
+        :param kwargs:
+        tutor, dog, datachegada, raca, telefone, email
+        :return:
+        """
+        print(f'FROM INSERT ADAPTACAO {list(kwargs.values())}')
+        q = '''
+        INSERT INTO adaptacao(TUTOR, DOG, DATACHEGADA, RACA, TELEFONE, EMAIL, DIRETRIZES,CRECHEHOTEL) VALUES (?,?,?,?,?,?,?,?)
+        '''
+        self.c.execute(q, list(kwargs.values())[0])
         self.conn.commit()
 
     def insert_new_arrival(self, nomecao, chegada, saida, adaptacao):

@@ -8,11 +8,9 @@ from databasehandler import DatabaseUsuarios, DatabaseCaes, Chegadas, Banhos, Pa
 from flask_login import login_user, login_required, LoginManager, current_user, logout_user
 from edit_tables import Connection
 from flask_bootstrap import Bootstrap
-from authflask import Registrar, Logar, User, getuser
+from authflask import Registrar, Logar, User, getuser, Adaptacao
 import base64
-import locale
 
-locale.setlocale(locale.LC_ALL, 'pt-br')
 CHAVE = os.getenv("chaveapi")
 app = Flask(__name__)
 app.secret_key = CHAVE
@@ -184,10 +182,10 @@ def registrar():
             data = form.data
             new_user = User.registrar(data["usuario"], data["nome"], data["email"], data['senha'])
             if new_user:
-                flask.flash("Usuario criado com sucesso. Por favor, faça o Login.", "alert aflert-info fade show {flashclass}")
+                flask.flash("Usuario criado com sucesso. Por favor, faça o Login.", f"alert aflert-info {flashclass}")
                 return redirect(url_for('login'))
             else:
-                flask.flash("Algo errado não está certo", f"alert alefrt-danger fade show {flashclass}")
+                flask.flash("Algo errado não está certo", f"alert alert-danger {flashclass}")
                 flask.flash(f"{DatabaseUsuarios.err}",
                             f"alert alefrt-danger fade show {flashclass}")
                 return render_template("register.html", form=form)
@@ -223,8 +221,16 @@ def login():
 
 
 @app.route("/", methods=["GET"])
+def welcome():
+    # flask.flash(f"Usuario: {current_user.name}", f"alert alert-danger {flashclass}")
+    if current_user.is_authenticated:
+        return redirect(url_for('home'), usuario=current_user.username)
+
+    return render_template('base.html')
+
+@app.route("/<usuario>", methods=["GET"])
 @login_required
-def home():
+def home(usuario):
     # flask.flash(f"Usuario: {current_user.name}", f"alert alert-danger {flashclass}")
     return render_template("base.html")
 
@@ -285,7 +291,7 @@ def freq():
                                      each
                                      )
         flask.flash('Caes inseridos com sucesso! Muito Obrigado', f'alert-info {flashclass}')
-        return redirect('home')
+        return redirect(url_for('home'))
 
 
 @app.route("/clockin", methods=["GET", "POST"])
@@ -324,9 +330,31 @@ def clockin():
 
 @app.route("/<string:username>", methods=["GET"])
 def perfil(username):
-    flask.flash(f"Acessou a página pessoal: {username}", 'falert alert-warning {flashclass}')
+    flask.flash(f"Acessou a página pessoal: {username}", f"alert alert-warning {flashclass}")
     return render_template("paginapessoal.html", current_user=current_user)
 
+
+@app.route('/formulariorecebido')
+def formulario_recebido():
+    flask.flash('Recebido!', f"alert-info {flashclass}")
+    return render_template('formulariorecebido.html')
+
+@app.route("/adaptacao", methods=["GET", "POST"])
+def ficha_adaptacao():
+    form = Adaptacao()
+    if request.method == 'GET':
+        return render_template('ficha_adaptacao.html', form=form)
+    else:
+        resposta = list(request.form.values())[1:-1]
+
+        print(resposta)
+        resposta.pop(5)
+        resposta.pop(5)
+        resposta.pop(5)
+        print(resposta)
+        with Chegadas() as chdb:
+            chdb.insert_adaptacao(resposta=resposta)
+        return redirect(url_for('formulario_recebido'))
 
 @app.route("/clientes")
 def mostra_clientes():

@@ -1,9 +1,9 @@
 # from flask_login import UserMixin
 from flask_user import UserManager, UserMixin
 from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, ValidationError, IntegerField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, EmailField, ValidationError, IntegerField, \
+    PasswordField, SubmitField, BooleanField, DateField, TextAreaField, RadioField
 from wtforms.validators import Email, EqualTo, Length
-from flask_bcrypt import generate_password_hash
 from databasehandler import DatabaseUsuarios, ConectDb
 
 
@@ -64,6 +64,23 @@ class Logar(FlaskForm):
     lembrar = BooleanField('Lembrar')
     submit = SubmitField("Logar")
 
+
+class Adaptacao(FlaskForm):
+    # def registrar_usuario(self):
+    nome = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Nome Tutor"})
+    dog = StringField(validators=[Length(min=3)], render_kw={"placeholder": "Nome Cao"})
+    raca = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Raça"})
+    email = EmailField(validators=[Email()], render_kw={"placeholder": "Email"})
+    telefone = StringField(validators=[Length(min=10, max=12, message='Telefone com DDD')],
+                           render_kw={"placeholder":"Telefone ex.: 27999999999"})
+    diretrizes = TextAreaField(render_kw={"placeholder": "Orientações para estadia"})
+    vacinado = BooleanField(label='Vacinado')
+    vermifugado = BooleanField(label='Vermifugado')
+    castrado = BooleanField(label='Castrado')
+    crechehotel = RadioField(label='Adaptação para crehce ou hotel?', choices=["Creche", 'Hotel'])
+
+    date = DateField()
+    submit = SubmitField("Enviar")
 
 # if __name__ == "__main__":
 #     usuario = User().login("cassiorodrigo", "Digo1660!")

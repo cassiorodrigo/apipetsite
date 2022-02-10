@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf%}
+
+{% block content %}
+
+<center>
+    <form method="post" class="mt-5" style="width:50%">
+        <!--{{ form.csrf_token }}-->
+        {{ form.hidden_tag() }}
+        <div class="row mt-3">
+            <div class="row mt-3">{{ wtf.form_field(form.nome) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.dog) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.raca) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.email) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.telefone) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.vacinado) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.vermifugado)}}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.castrado)}}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.date) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.diretrizes) }}</div>
+            <div class="row mt-3">{{ wtf.form_field(form.crechehotel) }}</div>
+            <center>
+                <div id='sendform' class="row mt-3 mb-5 btn btn-info"
+                     style="width:40%">{{ wtf.form_field(form.submit) }}</div>
+            </center>
+        </div>
+    </form>
+</center>
+<script>
+
+    function habilitar_btn(){
+    console.log('funcao chamada')
+    var sub_btn = document.querySelector("#submit")
+    var vacinando = document.querySelector("#vacinado")
+    var castrado = document.querySelector("#castrado")
+    var verfmifugado = document.querySelector("#verfmifugado")
+    if (vacinado.checked == true && castrado.checked == true && vermifugado.checked == true){
+        sub_btn.disabled=false;
+        console.log(vacinado.checked,
+                    castrado.checked,
+                    vermifugado.checked)
+        }else{
+        sub_btn.disabled=true;
+        }
+    }
+
+    function setaronchange(){
+    var send_btn =document.querySelector("#submit")
+    var vacinando = document.querySelector("#vacinado")
+    var castrado = document.querySelector("#castrado")
+    var vermifugado = document.querySelector("#vermifugado")
+    vacinando.onchange=habilitar_btn;
+    castrado.onchange=habilitar_btn;
+    vermifugado.onchange=habilitar_btn;
+    send_btn.disabled = true
+    }
+
+setaronchange();
+</script>
+{% endblock %}
