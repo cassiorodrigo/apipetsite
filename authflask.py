@@ -82,5 +82,3 @@ class Adaptacao(FlaskForm):
     date = DateField()
     submit = SubmitField("Enviar")
 
-# if __name__ == "__main__":
-#     usuario = User().login("cassiorodrigo", "Digo1660!")
