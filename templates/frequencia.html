@@ -43,12 +43,23 @@
         <tr>
             <td>
                 <p>
-                    {{ dog[1]+' ('+dog[2]+')' }}
+                    {{ dog[2]+' ('+dog[3]+')' }}
                 </p>
             </td>
             <td align="center"><input type="checkbox" name='presencas' value={{ dog[-1] }}></td>
         </tr>
         {% endfor %}
+        <tr>
+            <td align="center">
+                <input id="extradog" type="text" align="center">
+            </td>
+            <td align="center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="lightblue" class="bi bi-plus" viewBox="0 0 16 16"
+                    onclick="logar_extra_dog()">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+            </td>
+        </tr>
     </table>
     <div class="mt-5 mb-2 ml-5" width="80%" align="center">
         <input type="radio" id="hotel" name="crechehotel" value="hotel">
@@ -58,26 +69,29 @@
     </div>
     <button type="submit" class='btn btn-info mb-5' style="margin-top:35px; margin-left:50px;">Enviar</button>
 </form>
+<script>
+function logar_extra_dog(){
+    var dogextra = document.querySelector('#extradog');
+    var dogname = dogextra.value;
+    var paragrafo = document.createElement('p');
+    var newcheck = document.createElement('input');
+    newcheck.setAttribute("type","checkbox");
+    newcheck.checked = true;
+    newcheck.name = dogname
+    newcheck.value = dogname
+    newcheck.id = dogname
+    paragrafo.innerText = dogname;
+    var tabela = document.querySelector("#formulariofreq > tbody");
+    var row = tabela.insertRow(tabela.childElementCount-1);
+    var cell1 = row.insertCell(0)
+    var cell2 = row.insertCell(1)
+    cell1.setAttribute("align", "center")
+    cell2.setAttribute("align", "center")
+    cell1.appendChild(paragrafo);
+    cell2.appendChild(newcheck);
+
+}
+
+</script>
 </body>
 {% endblock %}
-<!--
-<script>
-    async function poptable(){
-        console.log("poptable chamado")
-        var tabela = document.getElementById("formulariofreq");
-        var nomes = await fetch('chegadas');
-        if (nomes.ok){
-            var dogs = await nomes.json();
-            for (let dog of dogs){
-                console.log(dog[1]);
-                var nrow = tabela.insertRow(1);
-                var ncell = nrow.insertCell(0);
-                var nccheck = nrow.insertCell(1);
-                ncell.innerHTML = dog[1];
-                nccheck.innerHTML = `<input type=checkbox value=${ncell.innerText}>`
-            };
-        };
-    };
-</script>
-</html>
--->

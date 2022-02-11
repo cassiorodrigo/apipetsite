@@ -18,9 +18,9 @@ table, th, tr, td {
     }
 body
 {
-height: 125vh;
+height: 195vh;
 margin-top: 70px;
-padding: 30px;
+padding: 50px;
 background-size: cover;
 font-family: sans-serif;
 }
@@ -39,7 +39,7 @@ header * {
 display: inline;
 }
 header li {
-margin: 10px;
+margin: 20px;
 }
 header li a {
 color: blue;
@@ -57,8 +57,8 @@ p {
 <header>
     <nav>
         <a href="/" style="text-decoration:none;">
-            <img src="{{ 'static/images/petlogo.jpg' }}" alt="PETLOGO aqui" width="160px" height="160px"
-            style="border-radius:50%; margin-top:100px">
+            <img src="{{ 'static/images/petlogo.jpg' }}" alt="PETLOGO aqui" width="120px" height="120px"
+            style="border-radius:50%; margin-top:60px; margin-left:12px">
         </a>
         <ul>
             {% if current_user.is_authenticated %}

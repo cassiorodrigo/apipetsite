@@ -290,15 +290,17 @@ def freq():
         timestamp = valores[0][0]
         if timestamp == '':
             timestamp = datetime.timestamp(datetime.now())
-        # print(request.form.to_dict())
-        # for e in valores:
-        #     print(e)
         for each in valores[1]:
             with PresencasDB() as pre:
                 with DatabaseCaes() as dbc:
                     res = dbc.get_one_dog(each)
-                    nomecao = res[4]
-                pre.insert_presencas(timestamp,
+                    if not res:
+                        pre.insert_presencas(data=timestamp,
+                                             tipo=valores[2][0],
+                                             nome=each)
+                    else:
+                        nomecao = res[4]
+                        pre.insert_presencas(timestamp,
                                      valores[2][0],
                                      nomecao,
                                      each

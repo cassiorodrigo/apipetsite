@@ -404,7 +404,7 @@ class DatabaseCaes(ConectDb):
 
     def get_caes(self):
         req = """
-        SELECT * FROM inscricoes WHERE (DIAS_POR_SEMANA NOT LIKE '%otel%' AND ATIVO = '1') ORDER BY NOME_CAO
+        SELECT * FROM inscricoes WHERE (DIAS_POR_SEMANA NOT LIKE '%otel%' AND ATIVO = '1') ORDER BY dog
         """
         res = self.c.execute(req).fetchall()
         return res
@@ -417,7 +417,7 @@ class DatabaseCaes(ConectDb):
             keys: EMAIL, TUTOR, NOME_CAO, public_id
         :return:
         """
-        q = "SELECT * FROM inscricoes WHERE(EMAIL=? or TUTOR=? or NOME_CAO=? or public_id=?)"
+        q = "SELECT * FROM inscricoes WHERE(EMAIL=? or NOME=? or dog=? or public_id=?)"
         res = self.c.execute(q, dados).fetchone()
 
         return res
@@ -573,7 +573,7 @@ class PresencasDB(ConectDb):
                """)
         self.conn.commit()
 
-    def insert_presencas(self, data, tipo, nome, public_id):
+    def insert_presencas(self, data, tipo, nome, public_id=None):
         try:
             dados = data, tipo, nome, public_id
             q = """
@@ -583,7 +583,7 @@ class PresencasDB(ConectDb):
             self.conn.commit()
             return True
         except Exception as err:
-            print(f"Um erro acontreceu no database handler linha 546{err}")
+            print(f"Um erro acontreceu no database handler linha 586{err}")
             return False
 
     def getpresencas(self):
