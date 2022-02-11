@@ -2,16 +2,88 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
 <center>
-    <div class="col-m-6" width="50%">
-        <form method="post" action="/formulariorecebido" style="width:50%">
+    <div class="col-m-6 mb-6" width="50% mb-6">
+        <form method="post" class="mb-6 pb-6" style="width:50%">
             {% for campo in form %}
-                <div class="col-m-6">
-                    {{ wtf.form_field(campo) }}
+                <div class="col-m-6 mt-3">
+                    {% if campo==form.submit %}
+                        {{ wtf.form_field(campo, class='btn btn-info') }}
+
+                    {% elif campo==form.dataadaptacao or campo==form.checkin or campo==form.checkout or campo==form.dias_por_semana or campo==form.meio_periodo %}
+                        <div id="hiddenfor{{ campo.id }}" hidden>
+                            {{ wtf.form_field(campo) }}
+                        </div>
+                    {% else %}
+                        {{ wtf.form_field(campo) }}
+                    {% endif %}
                 </div>
             {% endfor %}
-
         </form>
     </div>
 </center>
+
+<script>
+    function checkall_to_activate_send(){
+    var selecao = [document.querySelector('#vacinado').checked, document.querySelector('#vermifugado').checked,
+    document.querySelector('#castrado').checked];
+    var condicao = [true, true, true]
+    console.log(condicao == selecao)
+    if (JSON.stringify(selecao) == JSON.stringify(condicao)){
+        var subtn = document.querySelector("#submit").disabled = false;
+        }else{
+        var subtn = document.querySelector("#submit").disabled = true;
+        }
+    console.log(selecao)
+    };
+
+    function escolhecreche(){
+    var escolhecreche = document.querySelector("#hiddenfordias_por_semana")
+    var creche = document.querySelector("#crechehotel-0")
+    var hotel = document.querySelector("#crechehotel-1")
+    var daycare = document.querySelector("#crechehotel-2")
+    var dataadaptacao = document.querySelector("#hiddenfordataadaptacao")
+    var checkin = document.querySelector("#hiddenforcheckin")
+    var checkout = document.querySelector("#hiddenforcheckout")
+    var meioperiodo = document.querySelector("#hiddenformeio_periodo")
+
+    if (creche.checked == true){
+        escolhecreche.hidden='';
+        dataadaptacao.hidden = '';
+        meioperiodo.hidden='';
+        checkin.hidden = 'hidden';
+        checkout.hidden = 'hidden';
+        }else{
+            escolhecreche.hidden='hidden';
+        }
+
+    if (hotel.checked == true){
+        console.log('escolhe creche is true')
+        checkin.hidden=''
+        checkout.hidden=''
+        meioperiodo.hidden='hidden';
+        }else{
+            checkin.hidden = 'hidden';
+            checkout.hidden = 'hidden';
+
+        };
+
+    if (daycare.checked == true){
+        console.log('escolhe creche is true');
+        dataadaptacao.hidden = 'hidden';
+        checkin.hidden = 'hidden';
+        checkout.hidden = 'hidden';
+        meioperiodo.hidden='hidden';
+        }else{
+        /*
+        dataadaptacao.hidden = '';
+        checkin.hidden = '';
+        checkout.hidden = '';
+        */
+        }
+
+
+
+    }
+</script>
 
 {% endblock %}

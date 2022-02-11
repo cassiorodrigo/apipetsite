@@ -5,6 +5,7 @@ from flask_restful import Resource, Api
 from datetime import datetime, timedelta, timezone
 from databasehandler import DatabaseUsuarios, DatabaseCaes, Chegadas, Banhos, Pagamentos, PresencasDB,\
     FaturasDB, HorastrabalhadasDB, ClockRecorder
+from tratadadosinscricao import InscreverDog
 from flask_login import login_user, login_required, LoginManager, current_user, logout_user
 from edit_tables import Connection
 from flask_bootstrap import Bootstrap
@@ -68,8 +69,16 @@ api.add_resource(Tabelas, "/edit")
 
 @app.route('/inscricao', methods=["GET", "POST"])
 def inscricao():
-    form = Inscricao()
-    return render_template('inscricoes.html', form=form)
+
+    if request.method == "GET":
+        form = Inscricao()
+        return render_template('inscricoes.html', form=form)
+    else:
+        formulario = request.form.to_dict()
+        print(f"")
+        newdog = InscreverDog(**formulario).inscrever_dog()
+        flask.flash(f"Mensagem recebida. Trocar mensagem")
+        return redirect(url_for("welcome"))
 
 def get_values(*args, **kwargs):
     print(kwargs)
@@ -227,7 +236,6 @@ def login():
 
 @app.route("/", methods=["GET"])
 def welcome():
-    # flask.flash(f"Usuario: {current_user.name}", f"alert alert-danger {flashclass}")
     if current_user.is_authenticated:
         return redirect(url_for('home',  usuario=current_user.username))
 

@@ -5,7 +5,7 @@ from databasehandler import FaturasDB, DatabaseCaes
 from calendar import month_abbr, different_locale
 from datetime import date
 mes = calendar.month_abbr[date.today().month]
-ano = calendar.month_abbr[date.today().year]
+ano = date.today().year
 tabela_do_mes = f'{mes}{ano}'
 
 def monta_fatura(token):
@@ -24,19 +24,16 @@ def create_fatura():
 def assign_public_id():
     with sqlite3.connect('dados/administracao.db') as dbdog:
         c = dbdog.cursor()
-        c.execute('select PUBLIC_ID, _ID from inscricoes')
+        pid = c.execute('select PUBLIC_ID from inscricoes').fetchone()
         insert = '''
-        UPDATE inscricoes SET PUBLIC_ID=? where _ID=?
+        UPDATE inscricoes SET PUBLIC_ID=? where PUBLIC_ID is NULL
         '''
-        execucoes = list()
-        for pid in c:
-            print(pid)
-            public_id = uuid.uuid4().hex
-            while pid[0] == public_id:
-                public_id = uuid.uuid4().hex
-            execucoes.append([public_id, pid[1]])
 
-        c.executemany(insert, execucoes)
+        public_id = uuid.uuid4().hex
+        while pid[0] == public_id:
+            public_id = uuid.uuid4().hex
+
+        c.execute(insert, [public_id,])
         dbdog.commit()
 
 
@@ -87,8 +84,9 @@ def link_pid_faturas():
 
 
 if __name__ == "__main__":
+    assign_public_id()
     # monta_fatura(token='a6e1400783904b818326f8932a3e7124')
-    assign_token()
+    # assign_token()
     # print(assign_public_id())
     # resultado = get_data_from_db("f0e8e5e0027e465e931d0d72b750b47d")
     # print(resultado)

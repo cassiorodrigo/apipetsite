@@ -56,7 +56,10 @@ p {
 <body>
 <header>
     <nav>
-        <img src="{{ 'static/images/petlogo.jpg' }}" alt="PETLOGO aqui" width="80px" height="80px" style="round">
+        <a href="/" style="text-decoration:none;">
+            <img src="{{ 'static/images/petlogo.jpg' }}" alt="PETLOGO aqui" width="160px" height="160px"
+            style="border-radius:50%; margin-top:100px">
+        </a>
         <ul>
             {% if current_user.is_authenticated %}
             <li><a href="#"> {{ current_user.name }} </a> </li>
@@ -122,7 +125,9 @@ p {
 
                                 </td>
                                 <td style="border: 0px">
-                                    <input type="button" class="btn btn-info" value="Hotel">
+                                    <a href="{{ url_for('inscricao') }}">
+                                        <input type="button" class="btn btn-info" value="Inscricao">
+                                    </a>
                                 </td>
                             </tr>
                             <tr style="border: 0px">
