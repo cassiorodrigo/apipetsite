@@ -2,37 +2,56 @@
 
 {% block content %}
 
+<center>
 
-<table style="width:80%">
-    <thead>
-        <tr>
-            <th style="border : 0px">
-                Chegadas previstas
-            </th>
+    <table width="80%">
+        <thead>
+            <tr align="center">
+                <th class="text-success" style="border : 0px; font-size:26px">
+                    Chegadas previstas
+                </th>
 
-        </tr>
-    </thead>
-    <thead>
-        <tr>
-            <th>
-                Nome Cão
-            </th>
-            <th>
-                Data Entrada
-            </th>
-            <th>
-                Data Saída
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cada_cao in getchegadas() %}
-            <tr>
-                <td align="center">{{ cada_cao[1] }}</td>
-                <td align="center">{{ cada_cao[2] }}</td>
-                <td align="center">{{ cada_cao[3] }}</td>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+    </table>
+    <table style="width:80%">
+        <thead>
+            <tr align="center">
+                <th>
+                    Nome Cão
+                </th>
+                <th>
+                    Data Entrada
+                </th>
+                <th>
+                    Data Saída
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cada_cao in getchegadas() %}
+                {% set chegada = cada_cao[2] | float %}
+                {% set saida = cada_cao[3] | float %}
+                {% set hoje = inout[0] | float %}
+                {% set amanha = inout[1] | float %}
+            {% if hoje < chegada/1000 < amanha or hoje < saida < amanha %}
+                {% set amarelo = "bg-warning" %}
+            {% else %}
+                {% set amarelo = '' %}
+
+            {% endif %}
+                <tr>
+                    <td align="center" class={{ amarelo }}>{{ cada_cao[1] }}</td>
+                    <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(chegada/1000) }}</td>
+                    <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(saida/1000) }}</td>
+                </tr>
+                <tr class="bg-info">
+                    <td height="10px"></td>
+                    <td height="10px"></td>
+                    <td height="10px"></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</center>
 {% endblock %}

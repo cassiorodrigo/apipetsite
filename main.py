@@ -2,7 +2,7 @@ import json, time, flask, sqlite3, os
 from geradorpix import QRPix
 from flask import Flask, request, jsonify, Response, render_template, redirect, url_for, make_response, session
 from flask_restful import Resource, Api
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 from databasehandler import DatabaseUsuarios, DatabaseCaes, Chegadas, Banhos, Pagamentos, PresencasDB,\
     FaturasDB, HorastrabalhadasDB, ClockRecorder
 from tratadadosinscricao import InscreverDog
@@ -456,7 +456,21 @@ class ChegadasPrevistas(Resource):
     @login_required
     def homechegadas():
         if request.host_url in request.referrer and current_user.role != 'cliente':
-                return render_template('chegadas.html')
+            dia = datetime.now().day
+            mes = datetime.now().month
+            ano = datetime.now().year
+            # with Chegadas() as chg:
+            #     chegadas = chg.check_arrivals()
+            # ts_inicio = datetime(ano, mes, dia, 0, 10)
+            # ts_fim = datetime(ano, mes, dia, 0, 10)
+            ts_hoje = datetime.timestamp(datetime(ano, mes, dia, 0, 10))
+            ts_amanha = datetime.timestamp(datetime(ano, mes, dia, 23, 59))
+            inout = ts_hoje, ts_amanha
+            # chegadas = ChegadasPrevistas().get()
+            # for dog in chegadas:
+            #     if dog
+
+            return render_template('chegadas.html', inout = inout, datetime=datetime, date=date)
         else:
             return redirect(url_for('home'))
 

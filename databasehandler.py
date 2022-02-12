@@ -240,17 +240,29 @@ class Chegadas(ConectDb):
         self.conn.commit()
 
     def check_arrivals(self):
+        # self.c.execute("""
+        # Select
+        # _ID,
+        # NOMECAO,
+        # strftime("%d/%m/%Y", date(round(DATACHEGADA/1000), 'unixepoch')),
+        # strftime("%d/%m/%Y", date(ROUND(DATASAIDA/1000), 'unixepoch')),
+        # ADAPTACAO
+        # FROM chegadas
+        # WHERE DATACHEGADA > strftime('%s','now') OR
+        # DATASAIDA > strftime('%s','now')
+        # """)
+
         self.c.execute("""
-        Select
-        _ID,  
-        NOMECAO,
-        strftime("%d/%m/%Y", date(round(DATACHEGADA/1000), 'unixepoch')),
-        strftime("%d/%m/%Y", date(ROUND(DATASAIDA/1000), 'unixepoch')),
-        ADAPTACAO
-        FROM chegadas
-        WHERE DATACHEGADA > strftime('%s','now') OR
-        DATASAIDA > strftime('%s','now')
-        """)
+            Select
+            _ID,  
+            NOMECAO,
+            DATACHEGADA,
+            DATASAIDA,
+            ADAPTACAO
+            FROM chegadas
+            WHERE DATACHEGADA > strftime('%s','now') OR
+            DATASAIDA > strftime('%s','now')
+            """)
 
         resultado_busca = self.c.fetchall()
         return resultado_busca
