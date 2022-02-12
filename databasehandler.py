@@ -244,12 +244,12 @@ class Chegadas(ConectDb):
         Select
         _ID,  
         NOMECAO,
-        strftime("%d/%m/%Y", DATACHEGADA, 'unixepoch'),
-        strftime("%d/%m/%Y", DATASAIDA, 'unixepoch'),
+        strftime("%d/%m/%Y", date(round(DATACHEGADA/1000), 'unixepoch')),
+        strftime("%d/%m/%Y", date(ROUND(DATASAIDA/1000), 'unixepoch')),
         ADAPTACAO
         FROM chegadas
-        WHERE(DATACHEGADA >= CAST(strftime('%s', datetime('now')) AS INT)
-        OR DATASAIDA >= CAST(strftime('%s', datetime('now')) AS INT))
+        WHERE DATACHEGADA > strftime('%s','now') OR
+        DATASAIDA > strftime('%s','now')
         """)
 
         resultado_busca = self.c.fetchall()
