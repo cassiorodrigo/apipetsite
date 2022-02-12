@@ -345,7 +345,6 @@ def clockin():
 
 @app.route("/<string:username>", methods=["GET"])
 def perfil(username):
-    flask.flash(f"Acessou a página pessoal: {username}", f"alert alert-warning {flashclass}")
     return render_template("paginapessoal.html", current_user=current_user)
 
 
