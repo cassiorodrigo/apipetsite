@@ -55,34 +55,34 @@ p {
 </head>
 <body>
 <header>
-    <nav>
-        <a href="/" style="text-decoration:none;">
-            <img src="{{ 'static/images/petlogo.jpg' }}" alt="PETLOGO aqui" width="120px" height="120px"
-            style="border-radius:50%; margin-top:60px; margin-left:12px">
-        </a>
+    <nav style="background-color: lightblue; width:100%">
         <ul>
+            <a href="/" style="text-decoration:none;">
+                <img class="navbar-brand" src="{{ 'static/images/petlogo.jpg' }}" alt="PETLOGO aqui" width="120px" height="120px"
+                    style="border-radius:50%">
+            </a>
             {% if current_user.is_authenticated %}
-            <li><a href="#"> {{ current_user.name }} </a> </li>
-            <li><a href="{{ url_for('home', usuario=current_user.username) }}">Home</a></li>
+            <li class="nav-item"><a href="#"> {{ current_user.name }} </a> </li>
+            <li class="nav-item"><a href="{{ url_for('home', usuario=current_user.username) }}">Home</a></li>
             {% if current_user.role != 'cliente' %}
-            <li><a href="{{ url_for('banhos_pedidos') }}">Banhos</a></li>
-            <li><a href="{{ url_for('homechegadas') }}">Chegadas</a></li>
-            <li><a href="{{ url_for('freq') }}">Formulario de Frequencia</a></li>
-            <li><a href="{{ url_for('clockin') }}">Clock-in</a></li>
+            <li class="nav-item"><a href="{{ url_for('banhos_pedidos') }}">Banhos</a></li>
+            <li class="nav-item"><a href="{{ url_for('homechegadas') }}">Chegadas</a></li>
+            <li class="nav-item"><a href="{{ url_for('freq') }}">Formulario de Frequencia</a></li>
+            <li class="nav-item"><a href="{{ url_for('clockin') }}">Clock-in</a></li>
             {% endif %}
             {% if current_user.role == 'admin' or current_user.role == 'superadmin'%}
-            <li><a href="{{ url_for('mostra_clientes') }}">Clientes</a></li>
-            <li><a href="{{ url_for('fatura') }}">Fatura</a></li>
+            <li class="nav-item"><a href="{{ url_for('mostra_clientes') }}">Clientes</a></li>
+            <li class="nav-item"><a href="{{ url_for('fatura') }}">Fatura</a></li>
             {% endif %}
-            <li><a href="{{ url_for('logout') }}"> Deslogar   {{ current_user.name }}! </a> </li>
+            <li class="nav-item"><a href="{{ url_for('logout') }}"> Deslogar   {{ current_user.name }}! </a> </li>
             {% else %}
-            <li><a href="{{ url_for('login')}}">Login</a></li>
-            <li><a href="{{ url_for('registrar') }}">Registrar</a></li>
+            <li class="nav-item"><a href="{{ url_for('login')}}">Login</a></li>
+            <li class="nav-item"><a href="{{ url_for('registrar') }}">Registrar</a></li>
             {% endif %}
         </ul>
     </nav>
 </header>
-<div class="container">
+<div class="container-sm">
     <div class="col">
     </div>
     <div class="col">
@@ -108,35 +108,57 @@ p {
                 </p>
             </center>
             {# % if current_user.is_authenticated % #}
-                <h1>Sistema de controle Pet Park</h1>
+    <div class="row justify-content-center mt-5">
+        <div class="col-l-5">
+            <h1>Sistema de controle Pet Park</h1>
+        </div>
+        <div class="col-l-5">
                 <h2>Bem vindo(a), {{ current_user.name }}</h2>
-                <center>
-                    <table class="mt-5" style="border-spacing:20px;width:40%;border:0px;height:200px;">
-                        <tbody>
-                            <tr style="border-spacing:20px; border:0px">
-                                <td style="border:0px" align="center">
+        </div>
+    </div>
+<!--                <center>-->
+<!--                    <table class="mt-5" style="border-spacing:20px;width:40%;border:0px;height:200px;">-->
+<!--                        <tbody>-->
+<!--                            <tr style="border-spacing:20px; border:0px">-->
+<!--                                <td style="border:0px" align="center">-->
+                    <div class="row justify-content-center mt-5">
+                            <div class="col-lg-5 mt-5">
                                     <a href="{{ url_for('ficha_adaptacao') }}">
-                                        <input type="button" class="btn btn-info" value="Adaptacao" style="width:110px">
+                                        <input type="button" class="btn btn-info mt-3" value="Adaptacao" style="width:80%">
                                     </a>
+                            </div>
 
-                                </td>
-                                <td style="border: 0px" align="center">
+<!--                                </td>-->
+<!--                                <td style="border: 0px" align="center">-->
+                                <div class="col-lg-5 mt-5">
                                     <a href="{{ url_for('inscricao') }}">
-                                        <input type="button" class="btn btn-info" value="Inscricao" style="width:110px">
+                                        <input type="button" class="btn btn-info mt-3" value="Inscricao" style="width:80%">
                                     </a>
-                                </td>
-                            </tr>
-                            <tr style="border: 0px">
-                                    <td style="border: 0px" align="center">
-                                        <input type="button" class="btn btn-info" value="Creche" style="width:110px">
-                                    </td>
-                                    <td style="border: 0px" align="center">
-                                        <input type="button" class="btn btn-info" value="Banho" style="width:110px">
-                                    </td>
-                                </tr>
-                        </tbody>
-                    </table>
-                </center>
+                                </div>
+                    </div>
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr style="border: 0px">-->
+
+
+
+<!--                                    <td style="border: 0px" align="center">-->
+                    <div class="row justify-content-center mt-5">
+                                <div class="col-lg-5 mt-5">
+                                        <input type="button" class="btn btn-info mt-3" value="Creche" style="width:80%; margin-top:100%">
+<!--                                    </td>-->
+<!--                                    <td style="border: 0px" align="center">-->
+                                </div>
+
+                                <div class="col-lg-5 mt-5">
+                                        <input type="button" class="btn btn-info mt-3" value="Banho" style="width:80%">
+                                </div>
+                    </div>
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </center>-->
             {# % endif % #}
         {% endblock %}
     </div>
