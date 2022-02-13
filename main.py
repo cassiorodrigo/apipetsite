@@ -472,7 +472,11 @@ class ChegadasPrevistas(Resource):
                 nomes_chegadas = chd.get_arrivals_names()
 
             for nome in nomes_chegadas:
-                cuidados[nome[0]] = requests.get(f'http://192.168.1.123:5000/diretrizes/{nome[0]}').json()
+                try:
+                    cuidados[nome[0]] = Diretrizes().get(nomecao=nome[0])
+                    print(cuidados)
+                except Exception as err:
+                    print(err)
         except Exception as err:
             print(f"um erro aconteceu: {err}")
 
