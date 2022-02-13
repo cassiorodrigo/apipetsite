@@ -287,24 +287,26 @@ def freq():
         #TODO manejar o formulario aqui
         valores = request.form.listvalues()
         valores = list(valores)
+        print(valores)
         timestamp = valores[0][0]
         if timestamp == '':
             timestamp = datetime.timestamp(datetime.now())
-        for each in valores[1]:
-            with PresencasDB() as pre:
-                with DatabaseCaes() as dbc:
-                    res = dbc.get_one_dog(each)
-                    if not res:
-                        pre.insert_presencas(data=timestamp,
-                                             tipo=valores[2][0],
-                                             nome=each)
-                    else:
-                        nomecao = res[4]
-                        pre.insert_presencas(timestamp,
-                                     valores[2][0],
-                                     nomecao,
-                                     each
-                                     )
+        for _ in valores[0]:
+            for dog in valores[1]:
+                with PresencasDB() as pre:
+                    with DatabaseCaes() as dbc:
+                        res = dbc.get_one_dog(dog)
+                        if not res:
+                            print('res not found')
+                            pre.insert_presencas(data=timestamp,
+                                                 tipo=valores[-1][0],
+                                                 nome=dog)
+                        else:
+                            nomecao = res[2]
+                            pre.insert_presencas(data=timestamp,
+                                         tipo=valores[-1][0],
+                                         nome=nomecao,
+                                         public_id=res[-1])
         flask.flash('Caes inseridos com sucesso! Muito Obrigado', f'alert-info {flashclass}')
         return redirect(url_for('welcome', username=current_user.username))
 

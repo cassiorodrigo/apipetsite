@@ -430,9 +430,11 @@ class DatabaseCaes(ConectDb):
         :return:
         """
         q = "SELECT * FROM inscricoes WHERE(EMAIL=? or NOME=? or dog=? or public_id=?)"
-        res = self.c.execute(q, dados).fetchone()
-
-        return res
+        try:
+            res = list(self.c.execute(q, dados).fetchone())
+            return res
+        except TypeError:
+            return None
 
     def inserir_inscricoes(self, json_todos_caes) -> bool:
         """
