@@ -34,7 +34,7 @@
                 {% set saida = cada_cao[3] | float %}
                 {% set hoje = inout[0] | float %}
                 {% set amanha = inout[1] | float %}
-            {% if hoje < chegada/1000 < amanha or hoje < saida < amanha %}
+            {% if hoje < chegada/1000 < amanha or hoje <= saida/1000 <= amanha %}
                 {% set amarelo = "bg-warning" %}
             {% else %}
                 {% set amarelo = '' %}
