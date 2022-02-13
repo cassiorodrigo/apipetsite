@@ -3,6 +3,7 @@ import requests
 from unittest.mock import create_autospec
 from unittest import mock
 import main
+from telegramsender import FormSent, PedidoBanhos
 from geradorpix import Pagamento
 from Writer import Writer
 import logging
@@ -153,7 +154,23 @@ result = '[{"ATIVO":"TRUE","CUIDADOS_ESPECIAIS":"","DIAS_POR_SEMANA":"4",' \
 class MyTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.writer = Writer()
+        self.formsent = FormSent(
+            username='cassiorodrigo',
+            tipo='presenças creche',
+            dogsin=["eu", "eu mesmo", "irene"],
+        )
+
+        self.pedido_banhos = PedidoBanhos(
+            tutor='cassiorodrigo',
+            tipo='banhos',
+            dog='DOGTESTES',
+            buscacao='12:25',
+            databanho="aqui vai entrar a data do banho",
+            perfumes='sou perfumado',
+            instrucoes='lima atrás da orelha  hahahaha <strong>Isso é um teste do envio do telegram</strong>'
+        )
+        # self.sendbanhos = MensagemBanhos()
+        # self.writer = Writer()
         self.creche = 'http://127.0.0.1:5000/creche'
         self.login = 'http://127.0.0.1:5000/login'
         self.cadastrar_funcionario = 'http://127.0.0.1:5000/cadastrar-funcionario'
@@ -176,6 +193,20 @@ class MyTestCase(unittest.TestCase):
             mensagem='0520zdnNJxFvCvHr7nw6trlz'
             # mensagem='0520zdnNJxFvCvHr7nw6trlz'
         )
+
+    def test_banhos(self):
+        res = self.pedido_banhos.enviar_mensagem()
+        print(res)
+        print(res.text)
+
+    def test_sendmensagem(self):
+        mensagem = self.formsent.monta_mensagem()
+        print(mensagem)
+
+    def test_send(self):
+        res = self.formsent.enviar_mensagem()
+        print(res)
+        print(res.text)
 
     def test_pix_code_gen(self):
         expected_pl = "00020126580014BR.GOV.BCB.PIX013611c358f9-a42d-434f-b791-f176de78f21552040000530398654041.005802BR5925CASSIO RODRIGO D ANTONIO 6009SAO PAULO61080540900062240520zdnNJxFvCvHr7nw6trlz63043ABB"

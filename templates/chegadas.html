@@ -40,8 +40,20 @@
                 {% set amarelo = '' %}
 
             {% endif %}
+            {% if cuidados[cada_cao[1]][0]|length > 0 %}
+            {% set nomecao = cada_cao[1]+'*' %}
+            {% else %}
+            {% set nomecao = cada_cao[1] %}
+            {% endif %}
                 <tr>
-                    <td align="center" class={{ amarelo }}>{{ cada_cao[1] }}</td>
+                    <td align="center" class={{ amarelo }}>
+                            <button class="btn btn-secondary m-2" type="button" value="{{ cada_cao[1] }}"
+                                   style="width:50%"
+                                   data-toggle="popover" title="{{ cuidados[cada_cao[1]][0] }}"
+                                    data-content="{{ cuidados[cada_cao[1]][0] }}">{{ nomecao }}</button>
+
+
+                    </td>
                     <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(chegada/1000) }}</td>
                     <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(saida/1000) }}</td>
                 </tr>
@@ -54,4 +66,13 @@
         </tbody>
     </table>
 </center>
+
+<script>
+$(document).ready(function(){
+  $('[data-toggle="popover"]').popover({
+  trigger: 'focus'
+  });
+});
+</script>
+
 {% endblock %}

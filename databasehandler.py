@@ -239,6 +239,18 @@ class Chegadas(ConectDb):
         """, data)
         self.conn.commit()
 
+    def get_arrivals_names(self):
+        self.c.execute("""
+                    Select
+                    NOMECAO
+                    FROM chegadas
+                    WHERE (DATACHEGADA >= strftime('%s','now') OR
+                    DATASAIDA >= strftime('%s','now')-3600000)
+                    """)
+
+        resultado_busca = self.c.fetchall()
+        return resultado_busca
+
     def check_arrivals(self):
         self.c.execute("""
             Select
@@ -484,6 +496,15 @@ class DatabaseCaes(ConectDb):
             return False
         finally:
             self.conn.close()
+
+    @staticmethod
+    def get_remarks(nomecao):
+        q = """
+        SELECT diretrizes from inscricoes where(Dog like ?)
+        """
+        with ConectDb() as conn:
+            res = conn.c.execute(q, [nomecao,]).fetchone()
+        return res
 
 
 class FaturasHotel(ConectDb):

@@ -1,4 +1,4 @@
-import json, time, flask, sqlite3, os
+import json, time, flask, sqlite3, os, requests
 from geradorpix import QRPix
 from flask import Flask, request, jsonify, Response, render_template, redirect, url_for, make_response, session
 from flask_restful import Resource, Api
@@ -10,6 +10,7 @@ from flask_login import login_user, login_required, LoginManager, current_user, 
 from edit_tables import Connection
 from flask_bootstrap import Bootstrap
 from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao
+from telegramsender import FormSent, PedidoBanhos
 import base64
 
 CHAVE = os.getenv("chaveapi")
@@ -86,9 +87,6 @@ def get_values(*args, **kwargs):
 
 @app.route("/edit_table", methods=["GET", "POST"])
 def edit_table(*args, **kwargs):
-    # resposta = request.values.getlist('resposta')
-    # headers = request.values.getlist('headers')
-    # print(f"[FROM edit_table] request.values é {request.values.get('resposta')}")
     if request.method == 'GET':
         valores = None
 
@@ -284,7 +282,8 @@ def freq():
                 dogs = dbcaes.get_caes()
             return render_template("frequencia.html", dogs=dogs)
     else:
-        #TODO manejar o formulario aqui
+        # Dogs in Hotel or Creche will be managed here.
+
         valores = request.form.listvalues()
         valores = list(valores)
         print(valores)
@@ -307,6 +306,14 @@ def freq():
                                          tipo=valores[-1][0],
                                          nome=nomecao,
                                          public_id=res[-1])
+        dogspresenca = [dog[0] for dog in valores[1:-1]]
+        new_sender = FormSent(
+            username=current_user.username,
+            tipo=valores[-1][0],
+            dogsin=dogspresenca
+        )
+        new_sender.enviar_mensagem()
+
         flask.flash('Caes inseridos com sucesso! Muito Obrigado', f'alert-info {flashclass}')
         return redirect(url_for('welcome', username=current_user.username))
 
@@ -451,28 +458,33 @@ class ChegadasPrevistas(Resource):
                 if current_user.role != 'cliente':
                     return Chegadas().check_arrivals()
         except Exception as err:
-            return flask.flash("Houve um erro", f"alert alert-danger {flashclass}")
+            flask.flash("Houve um erro", f"alert alert-danger {flashclass}")
+            return redirect((url_for('welcome')))
+
 
     @staticmethod
     @app.route('/chegadasprevistas')
     @login_required
     def homechegadas():
+        cuidados = dict()
+        try:
+            with Chegadas() as chd:
+                nomes_chegadas = chd.get_arrivals_names()
+
+            for nome in nomes_chegadas:
+                cuidados[nome[0]] = requests.get(f'http://192.168.1.123:5000/diretrizes/{nome[0]}').json()
+        except Exception as err:
+            print(f"um erro aconteceu: {err}")
+
         if request.host_url in request.referrer and current_user.role != 'cliente':
             dia = datetime.now().day
             mes = datetime.now().month
             ano = datetime.now().year
-            # with Chegadas() as chg:
-            #     chegadas = chg.check_arrivals()
-            # ts_inicio = datetime(ano, mes, dia, 0, 10)
-            # ts_fim = datetime(ano, mes, dia, 0, 10)
             ts_hoje = datetime.timestamp(datetime(ano, mes, dia, 0, 10))
             ts_amanha = datetime.timestamp(datetime(ano, mes, dia, 23, 59))
             inout = ts_hoje, ts_amanha
-            # chegadas = ChegadasPrevistas().get()
-            # for dog in chegadas:
-            #     if dog
 
-            return render_template('chegadas.html', inout = inout, datetime=datetime, date=date)
+            return render_template('chegadas.html', inout=inout, datetime=datetime, date=date, cuidados=cuidados)
         else:
             return redirect(url_for('home'))
 
@@ -587,6 +599,14 @@ class Presencas(Resource):
             return "Houve uma falha"
 
 
+class Diretrizes(Resource):
+
+    def get(self, nomecao):
+        with DatabaseCaes() as dbc:
+            res = dbc.get_remarks(nomecao=nomecao)
+            res = dbc.get_remarks(nomecao=nomecao)
+        return res
+
 api.add_resource(Presencas, f"/presencas/", "/presencas/<string:index>")
 api.add_resource(Hotel, f'/hotel/')
 api.add_resource(DayCare, f'/daycare/')
@@ -595,6 +615,8 @@ api.add_resource(Creche, f'/creche/',
 api.add_resource(ChegadasPrevistas, f"/chegadas/",
                  f"/chegadas/<string:nome>/<string:chegada>/<string:saida>/<string:adaptacao>",
                  f"/chegadas/remove/<string:nome>/<string:chegada>")
+
+api.add_resource(Diretrizes, f"/diretrizes/<string:nomecao>", endpoint='diretrizes')
 api.add_resource(BanhosPedidos, f"/banhos",
                  f"/banhos/<string:nome>/<string:data_pedido>/<string:data_banho>/<string:tamanho>",
                  f"/banhos/<string:nome>/<string:data>")
