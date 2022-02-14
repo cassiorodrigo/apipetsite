@@ -45,6 +45,7 @@
             {% else %}
             {% set nomecao = cada_cao[1] %}
             {% endif %}
+            {% if saida/1000 > amanha %}
                 <tr>
                     <td align="center" class={{ amarelo }}>
                             <button class="btn btn-secondary m-2" type="button" value="{{ cada_cao[1] }}"
@@ -62,6 +63,7 @@
                     <td height="10px"></td>
                     <td height="10px"></td>
                 </tr>
+            {% endif %}
             {% endfor %}
         </tbody>
     </table>
