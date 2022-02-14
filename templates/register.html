@@ -3,17 +3,21 @@
 
 {% block content %}
 <center>
-<form method="post" class="mt-5" style="width:30%">
-    <!--{{ form.csrf_token }}-->
-    {{ form.hidden_tag() }} <div class="row mt-3">
-    </div>{{ wtf.form_field(form.usuario) }} <div class="row mt-3">
-    </div>{{ wtf.form_field(form.nome) }} <div class="row mt-3">
-    </div>{{ wtf.form_field(form.email) }} <div class="row mt-3">
-    </div>{{ wtf.form_field(form.senha) }} <div class="row mt-3">
-    </div>{{ wtf.form_field(form.confirma_senha) }} <div class="row mt-3">
-    </div>{{ wtf.form_field(form.submit, class='btn btn-info') }} <div class="row mt-3">
-</div>
-</form>
+    <form method="post" class="mt-5" style="width:30%">
+        {{ form.hidden_tag() }}
+            {% for tag in form %}
+                {% if tag != form.csrf_token %}
+                    {% if tag == form.submit %}
+                         {{ wtf.form_field(tag, class='btn btn-info mt-5') }}
+                    {% else %}
+                        <div class="row mt-3">
+                            {{ wtf.form_field(tag) }}
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+            {% endfor %}
+    </form>
 </center>
 
 {% endblock %}

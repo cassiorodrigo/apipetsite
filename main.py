@@ -192,7 +192,7 @@ def registrar():
     else:
         if form.validate_on_submit():
             data = form.data
-            new_user = User.registrar(data["usuario"], data["nome"], data["email"], data['senha'])
+            new_user = User.registrar(username=data["usuario"], nomecao=data["cao"], nome=data["nome"], email=data["email"], pwd=data['senha'])
             if new_user:
                 flask.flash("Usuario criado com sucesso. Por favor, faça o Login.", f"alert aflert-info {flashclass}")
                 return redirect(url_for('login'))
@@ -203,7 +203,7 @@ def registrar():
                 return render_template("register.html", form=form)
 
         else:
-            flask.flash("Algo errado não está certo", f"alert alefrt-danger fade show {flashclass}")
+            flask.flash(f"Algo errado não está certo", f"alert alefrt-danger fade show {flashclass}")
             return render_template("register.html", form=form)
 
 
@@ -304,16 +304,16 @@ def freq():
                             nomecao = res[2]
                             dogspresenca.append(nomecao)
                             pre.insert_presencas(data=timestamp,
-                                         tipo=valores[-1][0],
-                                         nome=nomecao,
-                                         public_id=res[-1])
+                                                 tipo=valores[-1][0],
+                                                 nome=nomecao,
+                                                 public_id=res[-1])
 
-        nomesextras = [dog[0] if len(dog[0]) < 32 else None for dog in valores[1:-1]]
         print(valores[1:-1])
-        nomesextras = set(nomesextras)
-        nomesextras.remove(None)
+        nomesextras = [dog[0] if len(dog[0]) < 32 else None for dog in valores[1:-1]]
+        if len(nomesextras) > 1:
+            nomesextras = set(nomesextras)
+            nomesextras.remove(None)
         dogspresenca += nomesextras
-        print(dogspresenca)
         new_sender = FormSent(
             username=current_user.username,
             tipo=valores[-1][0],
@@ -561,11 +561,21 @@ class BanhosPedidos(Resource):
                 return redirect(url_for('banhos_pedidos'))
 
     @staticmethod
-    @app.route('/pedirbanho', methods=['GET', "METHOD"])
+    @app.route('/pedirbanho', methods=['GET', "POST"])
     def pedirbanho():
         form = Banho()
         if request.method == 'GET':
             return  render_template("pedidobanho.html", form=form)
+
+        else:
+            print(request.form.to_dict())
+            if current_user.is_authenticated:
+                nome = current_user.name
+                nomecao = current_user.nomecao
+                flask.flash(f"{nome}: {nomecao}", flashclass)
+                return redirect(url_for('home', usuario=current_user.username))
+            else:
+                return redirect(url_for('welcome'))
 
 class PagamentosRegistrar(Resource):
 

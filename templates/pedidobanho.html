@@ -2,25 +2,38 @@
 {% import 'bootstrap/wtf.html' as wtf%}
 
 {% block content %}
-<p>
-    <img src="{{ 'static/images/1036104_cat-paw-print-images-wallpapers-hd-fine_1466x1500_h.webp' }}" alt="paws" width="150px" height="150px">
-</p>
 
-<i class='fas fa-paw' style='font-size:48px;color:red'></i>
+{# % for _ in range(10 )%}
+<!--<div class="col-sm-2 p-1">-->
+<!--    <img src="{{ 'static/images/paws.webp' }}" alt="paws" width="150px" height="150px">-->
+<!--</div>-->
+{% endfor % #}
+
+<div class="col-l-1">
 <center>
-    <div class="text-center col-l-9" style="width:50%">
+    <div class="text-center col-l-1" style="width:50%">
         <form method="post">
             {% for tag in form %}
             {% if tag == form.submit %}
                 {% set classbtn = 'btn btn-info '%}
             {% endif %}
                 {% if tag != form.csrf_token %}
-                    <div class="mt-3 {{ classbtn }}">
-                        {{ wtf.form_field(tag) }}
-                    </div>
+                    {% if current_user.is_authenticated == False or current_user.dog == None %}
+                        <div class="mt-3 {{ classbtn }}">
+                            {{ wtf.form_field(tag) }}
+                        </div>
+                    {% else %}
+                        {% if tag != form.nome and  tag != form.nome_cao %}
+                            <div class="mt-3 {{ classbtn }}">
+                                {{ wtf.form_field(tag) }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </form>
     </div>
 </center>
+    </div>
+
 {% endblock %}

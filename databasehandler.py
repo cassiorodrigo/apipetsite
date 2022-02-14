@@ -279,12 +279,14 @@ class DatabaseUsuarios(ConectDb):
     err = None
 
     def __init__(self):
+        self.dog = None
         super().__enter__()
         # self.conn = sqlite3.connect("dados/administracao.db")
         # self.c = self.conn.cursor()
         self.id = None
         self.public_id = None
         self.nome = None
+        self.dog = None
         self.email = None
         self.username = None
         self.role = "cliente"
@@ -293,6 +295,7 @@ class DatabaseUsuarios(ConectDb):
         _ID INTEGER PRIMARY KEY AUTOINCREMENT,
         PUBLIC_ID TEXT UNIQUE,
         USERNAME TEXT UNIQUE,
+        NOMECAO TEXT,
         NOME TEXT UNIQUE,
         EMAIL TEXT UNIQUE,
         ROLE DEFAULT 'cliente',
@@ -314,7 +317,7 @@ class DatabaseUsuarios(ConectDb):
         res = self.c.execute("SELECT * FROM usuarios WHERE PUBLIC_ID=?", [public_id, ]).fetchone()
         return res
 
-    def registrar_usuario(self, nome, usuario, email, senha):
+    def registrar_usuario(self, nome, nomecao, usuario, email, senha):
         try:
             public_id = uuid.uuid4().hex
             publicids = self.c.execute('select PUBLIC_ID FROM usuarios').fetchall()
@@ -325,9 +328,9 @@ class DatabaseUsuarios(ConectDb):
             nsenha_email = senha+email
             senha_usuario = generate_password_hash(nsenha_usuario)
             senha_email = generate_password_hash(nsenha_email)
-            valores = public_id, nome, usuario, email
+            valores = public_id, nome, usuario, email, nomecao
             self.c.execute('''
-            INSERT INTO usuarios(PUBLIC_ID, NOME, USERNAME, EMAIL) VALUES(?,?,?, ?)
+            INSERT INTO usuarios(PUBLIC_ID, NOME, USERNAME, EMAIL, NOMECAO) VALUES(?,?,?,?,?)
             ''', valores)
             self.c.execute('''
             INSERT INTO segredos(SEGREDO_USUARIO, SEGREDO_EMAIL) VALUES(?,?)
@@ -339,14 +342,6 @@ class DatabaseUsuarios(ConectDb):
             DatabaseUsuarios.err = f"{error} Já cadastrado. Por favor, escolha outro {error}"
             # print(self.err)
             return False
-
-    # def atualizar_senha(self, token:int, email: str, novasenha: str, usuario: str):
-    #     nsenha = novasenha+usuario
-    #     novasenha = sh(bytes(nsenha, 'UTF-8')).hexdigest()
-    #     self.c.execute('''
-    #     UPDATE login SET senha = ? WHERE(email=?)
-    #     ''', (novasenha,email))
-    #     self.conn.commit()
 
     def login_usuarios(self, usuario, senha) -> bool:
 
@@ -370,7 +365,7 @@ class DatabaseUsuarios(ConectDb):
         SELECT * FROM usuarios WHERE(_ID=?)
         """
         ident = self.c.execute(id_usuario, [usuario,]).fetchone()[0]
-        self.id, self.public_id, self.username, self.nome, self.email, self.role= self.c.execute(getinfo, [ident,]).fetchone()
+        self.id, self.public_id, self.username, self.nome, self.dog, self.email, self.role = self.c.execute(getinfo, [ident,]).fetchone()
         s_armazenada = self.c.execute(senha_a_comparar, [ident,]).fetchone()[0]
 
         return check_password_hash(s_armazenada, nsenha)
@@ -601,7 +596,7 @@ class PresencasDB(ConectDb):
         try:
             dados = data, tipo, nome, public_id
             q = """
-            INSERT OR IGNORE INTO presencas(DATA, TIPO, NOMECAO, public_id) VALUES(?,?,?,?)
+            INSERT INTO presencas(DATA, TIPO, NOMECAO, public_id) VALUES(?,?,?,?)
             """
             self.c.execute(q, dados)
             self.conn.commit()

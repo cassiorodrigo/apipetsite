@@ -6,18 +6,18 @@ from wtforms import Form, StringField, EmailField, ValidationError, IntegerField
 from wtforms.validators import Email, EqualTo, Length, InputRequired
 from wtforms_components import SelectField
 
-from databasehandler import DatabaseUsuarios, ConectDb
+from databasehandler import DatabaseUsuarios, ConectDb, DatabaseCaes
 
 
 def getuser(id):
     with ConectDb() as db:
         res = db.c.execute("SELECT * FROM usuarios WHERE(PUBLIC_ID = ?)", [id,]).fetchone()
-        return User(res[1], res[3], res[4], res[2], res[5])
+        return User(res[1], res[3], res[4], res[2], res[5], res[6])
 
 
 class User(UserMixin):
 
-    def __init__(self, public_id, name, email, username, role):
+    def __init__(self, public_id, name, email, username, role, dog):
         self.name = name
         self.email = email
         self.username = username
@@ -26,6 +26,10 @@ class User(UserMixin):
         self.clockin = False
         self.clockout = False
         self.role = role
+        self.dog = dog
+        # with DatabaseCaes() as dbc:
+        #     dog = dbc.get_one_dog(public_id)
+        #     self.nomecao = dog
 
     def get_id(self):
         return self.public_id
@@ -35,16 +39,17 @@ class User(UserMixin):
         db_servicos = DatabaseUsuarios()
         resultado = db_servicos.login_usuarios(user, pwd)
         email = db_servicos.email
+        dog = db_servicos.dog
         name = db_servicos.nome
         username = db_servicos.username
         role = db_servicos.role
         public_id = db_servicos.public_id
-        return User(public_id, name, email, username, role)
+        return User(public_id, name, email, username, role, dog)
 
     @staticmethod
-    def registrar(username, nome, email, pwd):
+    def registrar(username, nome, nomecao, email, pwd):
         db_servicos = DatabaseUsuarios()
-        res = db_servicos.registrar_usuario(nome, username, email, pwd)
+        res = db_servicos.registrar_usuario(nome=nome, nomecao=nomecao, email=email, senha=pwd, usuario=username)  # nome, nomecao, usuario, email, senha
         return res
 
 
@@ -52,6 +57,7 @@ class Registrar(FlaskForm):
     # def registrar_usuario(self):
     nome = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Nome"})
     usuario = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Usuario"})
+    cao = StringField(validators=[Length(min=5)], render_kw={"placeholder": "Nome do Cão"})
     email = EmailField(validators=[Email()], render_kw={"placeholder": "Email"})
     senha = PasswordField(validators=[Length(min=8)], render_kw={"placeholder": "Senha"})
     confirma_senha = PasswordField(validators=[Length(min=8)], render_kw={"placeholder": "Confirme a senha"})
@@ -122,8 +128,10 @@ class Inscricao(Form):
 class Banho(FlaskForm):
     nome = StringField(validators=[Length(min=3, max=20), InputRequired()], render_kw={'placeholder':'Nome do Tutor'})
     nome_cao = StringField(validators=[Length(min=3, max=20), InputRequired()], render_kw={'placeholder':'Nome do Cão'})
-    databanho = DateField(label='Data do banho')
-    busca = TimeField(label='Hora que vai buscar: ')
+    databanho = DateField(label='Data do banho', validators=[InputRequired()])
+    busca = TimeField(label='Hora que vai buscar: ', validators=[InputRequired()])
     perfume = BooleanField(label='Usar Perfume?')
-    orientacoes = TimeField(label='Orientações ou cuidados especias: ')
+    orientacoes = TextAreaField(label='Orientações ou cuidados especias: ',
+                                render_kw={"placeholder": "Descreva se é necessario algum cuidado especial"
+                                                          "durante o banho"})
     submit = SubmitField(label='Pedir Banho!')

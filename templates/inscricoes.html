@@ -8,7 +8,6 @@
                 <div class="col-m-6 mt-3">
                     {% if campo==form.submit %}
                         {{ wtf.form_field(campo, class='btn btn-info') }}
-
                     {% elif campo==form.dataadaptacao or campo==form.checkin or campo==form.checkout or campo==form.dias_por_semana or campo==form.meio_periodo %}
                         <div id="hiddenfor{{ campo.id }}" hidden>
                             {{ wtf.form_field(campo) }}
