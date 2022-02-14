@@ -33,7 +33,7 @@
                     {{ dog[2]+' ('+dog[3]+')' }}
                 </p>
             </td>
-            <td align="center"><input type="checkbox" name='presencas' value={{ dog[-1] }}></td>
+            <td align="center"><input type="checkbox" name={{ dog[2] }} value={{ dog[-1] }}></td>
         </tr>
         {% endfor %}
         <tr>
@@ -53,8 +53,8 @@
         <label for="hotel">Hotel</label><br>
         <input type="radio" id="creche" name="crechehotel" value="creche" checked>
         <label for="creche">Creche</label><br>
-        <input type="radio" id="Daycare" name="daycare" value="daycare" checked>
-        <label for="creche">Day Care</label><br>
+        <input type="radio" id="Daycare" name="daycare" value="daycare">
+        <label for="Daycare">Day Care</label><br>
     </div>
     <button type="submit" class='btn btn-info mb-5' style="margin-top:35px; margin-left:50px;">Enviar</button>
 </form>

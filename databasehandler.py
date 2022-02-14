@@ -592,11 +592,11 @@ class PresencasDB(ConectDb):
                """)
         self.conn.commit()
 
-    def insert_presencas(self, data, tipo, nome, public_id=None):
+    def insert_presencas(self, data, tipo, nome, public_id=None, sent_by=None):
         try:
-            dados = data, tipo, nome, public_id
+            dados = data, tipo, nome, public_id, sent_by
             q = """
-            INSERT INTO presencas(DATA, TIPO, NOMECAO, public_id) VALUES(?,?,?,?)
+            INSERT INTO presencas(DATA, TIPO, NOMECAO, public_id, usuario) VALUES(?,?,?,?,?)
             """
             self.c.execute(q, dados)
             self.conn.commit()
