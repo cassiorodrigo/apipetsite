@@ -2,7 +2,7 @@
 from flask_user import UserManager, UserMixin
 from flask_wtf import FlaskForm
 from wtforms import Form, StringField, EmailField, ValidationError, IntegerField, \
-    PasswordField, SubmitField, BooleanField, DateField, TextAreaField, RadioField, fields
+    PasswordField, SubmitField, BooleanField, DateField, TextAreaField, RadioField, TimeField, fields
 from wtforms.validators import Email, EqualTo, Length, InputRequired
 from wtforms_components import SelectField
 
@@ -118,3 +118,12 @@ class Inscricao(Form):
 
     submit = SubmitField("Enviar", render_kw={"style": "width:50%; margin-bottom:60px", "class": "btn btn-info", "disabled":"disabled"})
 
+
+class Banho(FlaskForm):
+    nome = StringField(validators=[Length(min=3, max=20), InputRequired()], render_kw={'placeholder':'Nome do Tutor'})
+    nome_cao = StringField(validators=[Length(min=3, max=20), InputRequired()], render_kw={'placeholder':'Nome do Cão'})
+    databanho = DateField(label='Data do banho')
+    busca = TimeField(label='Hora que vai buscar: ')
+    perfume = BooleanField(label='Usar Perfume?')
+    orientacoes = TimeField(label='Orientações ou cuidados especias: ')
+    submit = SubmitField(label='Pedir Banho!')

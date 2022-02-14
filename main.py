@@ -9,7 +9,7 @@ from tratadadosinscricao import InscreverDog
 from flask_login import login_user, login_required, LoginManager, current_user, logout_user
 from edit_tables import Connection
 from flask_bootstrap import Bootstrap
-from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao
+from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao, Banho
 from telegramsender import FormSent, PedidoBanhos
 import base64
 
@@ -286,7 +286,7 @@ def freq():
 
         valores = request.form.listvalues()
         valores = list(valores)
-        print(valores)
+        dogspresenca = list()
         timestamp = valores[0][0]
         if timestamp == '':
             timestamp = datetime.timestamp(datetime.now())
@@ -302,11 +302,18 @@ def freq():
                                                  nome=dog)
                         else:
                             nomecao = res[2]
+                            dogspresenca.append(nomecao)
                             pre.insert_presencas(data=timestamp,
                                          tipo=valores[-1][0],
                                          nome=nomecao,
                                          public_id=res[-1])
-        dogspresenca = [dog[0] for dog in valores[1:-1]]
+
+        nomesextras = [dog[0] if len(dog[0]) < 32 else None for dog in valores[1:-1]]
+        print(valores[1:-1])
+        nomesextras = set(nomesextras)
+        nomesextras.remove(None)
+        dogspresenca += nomesextras
+        print(dogspresenca)
         new_sender = FormSent(
             username=current_user.username,
             tipo=valores[-1][0],
@@ -553,6 +560,12 @@ class BanhosPedidos(Resource):
                 flask.flash(mensagem, f'alert alert-danger {flashclass}')
                 return redirect(url_for('banhos_pedidos'))
 
+    @staticmethod
+    @app.route('/pedirbanho', methods=['GET', "METHOD"])
+    def pedirbanho():
+        form = Banho()
+        if request.method == 'GET':
+            return  render_template("pedidobanho.html", form=form)
 
 class PagamentosRegistrar(Resource):
 

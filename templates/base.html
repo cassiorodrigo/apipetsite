@@ -12,22 +12,35 @@
   src="https://code.jquery.com/jquery-3.6.0.js"
   integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
   crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <title>Pet Park</title>
     {% import "bootstrap/wtf.html" as wtf %}
 
 
 <style type=text/css>
+
 table, th, tr, td {
     border: 1px solid black;
     }
-body
+body, html
 {
-height: 195vh;
+height: 100%;
 margin-top: 70px;
 padding: 50px;
 background-size: cover;
 font-family: sans-serif;
 }
+
+.bg{
+    background-image: url("static/images/paws.webp");
+    height:100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.1;
+    position: absolute;
+}
+
 header {
 background-color: lightblue;
 position: fixed;
@@ -87,87 +100,62 @@ p {
         </ul>
     </nav>
 </header>
-<div class="container-sm">
-    <div class="col">
-    </div>
-    <div class="col">
-        {% with messages = get_flashed_messages(with_categories=True) %}
-            {% if messages %}
-                <div class="mt-5 flashes ">
-                    {% for category, message in messages %}
-                        <div class="{{ category }} text-center">
-                            <strong>
-                                {{ message }}
-                            </strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-    </div>
-        {% block content %}
-            <center>
-                <p>
-                    Utilize os links no cabeçalho acima para navegar entre as páginas
-                </p>
-            </center>
-            {# % if current_user.is_authenticated % #}
-    <div class="row justify-content-center mt-5">
-        <div class="col-l-5">
-            <h1>Sistema de controle Pet Park</h1>
-        </div>
-        <div class="col-l-5">
-                <h2>Bem vindo(a), {{ current_user.name }}</h2>
-        </div>
-    </div>
-<!--                <center>-->
-<!--                    <table class="mt-5" style="border-spacing:20px;width:40%;border:0px;height:200px;">-->
-<!--                        <tbody>-->
-<!--                            <tr style="border-spacing:20px; border:0px">-->
-<!--                                <td style="border:0px" align="center">-->
-                    <div class="row justify-content-center mt-5">
-                            <div class="col-lg-5 mt-5">
-                                    <a href="{{ url_for('ficha_adaptacao') }}">
-                                        <input type="button" class="btn btn-info mt-3" value="Adaptacao" style="width:80%">
-                                    </a>
+<div class="bg"></div>
+    <div class="container-sm" style="opacity:1 !important;">
+        <div class="row">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="mt-5 flashes ">
+                        {% for category, message in messages %}
+                            <div class="{{ category }} text-center">
+                                <strong>
+                                    {{ message }}
+                                </strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-
-<!--                                </td>-->
-<!--                                <td style="border: 0px" align="center">-->
-                                <div class="col-lg-5 mt-5">
-                                    <a href="{{ url_for('inscricao') }}">
-                                        <input type="button" class="btn btn-info mt-3" value="Inscricao" style="width:80%">
-                                    </a>
-                                </div>
+                        {% endfor %}
                     </div>
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            <tr style="border: 0px">-->
+                {% endif %}
+            {% endwith %}
+        </div>
+            {% block content %}
+                {# % if current_user.is_authenticated % #}
+        <div class="row mt-5" align="center">
+            <div class="col-l-5">
+                <h1>Sistema de controle Pet Park</h1>
+            </div>
+            <div class="col-l-5">
+                    <h2>Bem vindo(a), {{ current_user.name }}</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-5">
+                <div class="col-lg-5 mt-5">
+                        <a href="{{ url_for('ficha_adaptacao') }}">
+                            <input type="button" class="btn btn-info mt-3" value="Adaptacao" style="width:80%">
+                        </a>
+                </div>
 
+                <div class="col-lg-5 mt-5">
+                    <a href="{{ url_for('inscricao') }}">
+                        <input type="button" class="btn btn-info mt-3" value="Inscricao" style="width:80%">
+                    </a>
+                </div>
+        </div>
 
+        <div class="row justify-content-center mt-5">
+                    <div class="col-lg-5 mt-5">
+                            <input type="button" class="btn btn-info mt-3 disabled" value="Reservas (já cadastrados)" style="width:80%; margin-top:100%">
 
-<!--                                    <td style="border: 0px" align="center">-->
-                    <div class="row justify-content-center mt-5">
-                                <div class="col-lg-5 mt-5">
-                                        <input type="button" class="btn btn-info mt-3" value="Creche" style="width:80%; margin-top:100%">
-<!--                                    </td>-->
-<!--                                    <td style="border: 0px" align="center">-->
-                                </div>
-
-                                <div class="col-lg-5 mt-5">
-                                        <input type="button" class="btn btn-info mt-3" value="Banho" style="width:80%">
-                                </div>
                     </div>
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                        </tbody>-->
-<!--                    </table>-->
-<!--                </center>-->
-            {# % endif % #}
-        {% endblock %}
+
+                    <div class="col-lg-5 mt-5">
+                        <a href="{{ url_for('pedirbanho') }}">
+                            <input type="button" class="btn btn-info mt-3" value="Pedidos de Banho" style="width:80%">
+                        </a>
+                    </div>
+        </div>
+                {# % endif % #}
+            {% endblock %}
     </div>
-    <div class="col"></div>
-</div>
 </body>
 </html>

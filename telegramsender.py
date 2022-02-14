@@ -56,7 +56,7 @@ class FormSent(SendMessage):
     def monta_mensagem(self):
         formulario = f"""
 Formulário de Presenças de <strong> {self.tipo} </strong>:
-Número de cães presentes: {len(self.listadecaes)}
+Número de cães presentes: {len(self.dogsin)}
 Cães Presentes:
 
 {self.listadecaes} 
