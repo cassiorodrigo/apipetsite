@@ -5,88 +5,60 @@
     <div class="row">
         <div class="col-xl-6">
             <form method="post">
-                <label>Escolha uma coluna</label><br>
+                <label>Escolha uma Tabela</label><br>
                     <div class="col-xl-6 mb-3">
                         <select name="tabelas" id="tabelas" onchange="mostracolunas(this.value)">
                             <option name="none" value="none">Selecione uma tabela</option>
                             {% for nametabela in tabelas %}
-                                <option name="{{ nametabela }}" value="{{ nametabela[0] }}"> {{ nametabela[0] }} </option>
+                                <option name="{{ nametabela[0] }}" value="{{ nametabela[0] }}"> {{ nametabela[0] }} </option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div>
-                        <label for="cols">Escolha uma coluna para atualizar</label><br>
-                        <select name="colunas" id="cols" multiple=true class="mb-5" onchange="mostrardados(this.value)">
-                            <option value="none"> Selecione as colunas </option>
-                        </select><br>
-                        <label for="valores" class="mt-6">
-                            Selecione os valores
-                        </label>
-                        <select name="valores" id="vals" multiple=true>
-                        </select>
-                    </div>
-                <input type="submit" class="alert alert-info mt-3 "><br>
             </form>
+        <div class="col-l-5">
+            <table>
+                <thead>
+                    <tr>
+                        <td id="titulo_da_tabela">
+
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            <table>
+                <tbody id="tabela_dados">
+                </tbody>
+            </table>
         </div>
     </div>
 </center>
         <!--input type="button" class="alert alert-info" onclick="colunas.hidden=false" value="Mostrar Colunas"--><br>
-<center>
-    <h3>{{ valores }}</h3>
-    {% if valores %}
-        <table>
-            <thead>
-                <tr>
-                    <td>
-                    </td>
-                </tr>
-            </thead>
-
-            <tbody>
-                    <tr>
-                        <td>
-                        </td>
-                    </tr>
-            </tbody>
-        </table>
-    {% endif %}
-</center>
-
+{% endif %}
 <script>
 async function mostracolunas(tabela){
-    var campo = document.querySelector('#cols')
-    while (campo.ChildElementCount > 1) {
-        campo.removeChild(campo.firstChild)
-    }
-    req = new Request(`edit?tabela=${tabela}`)
+    req = new Request(`edit?tabela=${tabela}`, {"method":"post"});
+    var tabela_dados = document.querySelector("#tabela_dados");
+    var titulo = document.querySelector("#titulo_da_tabela");
+    while(tabela_dados.firstChild){
+        tabela_dados.firstChild.remove()
+    };
+    while(titulo.firstChild){
+        titulo.firstChild.remove()
+    };
+    titulo.innerHTML = tabela
+
     const response = await fetch(req);
     const resultado = await response.json();
-    for (e of resultado) {
-        // console.log(e[1])
-        var opt = document.createElement('option')
-        opt.value = e[1]
-        opt.innerText = e[1]
-        campo.appendChild(opt);
-    }
-
-    return resultado
+    for (let e of resultado){
+        ntr = document.createElement('tr');
+        for (let i of e){
+            ntd = document.createElement('td');
+            ntd.innerHTML = i;
+            ntr.appendChild(ntd)
+            };
+        tabela_dados.appendChild(ntr)
+    };
     };
 
-async function mostrardados(coluna){
-    var tabela = document.querySelector('#tabelas').value
-    var vals = document.querySelector("#vals")
-
-    const url = `edit?tabela=${tabela}&coluna=${coluna}`
-    const response = await fetch(url)
-    const rj = await response.json()
-    for (let e of rj) {
-        var opcoes = document.createElement("option")
-        opcoes.value = e[0]
-        opcoes.innerText = e[0]
-        vals.appendChild(opcoes);
-    }
-}
-
 </script>
-{% endif %}
 {% endblock %}

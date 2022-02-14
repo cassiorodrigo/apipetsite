@@ -57,12 +57,13 @@ class Tabelas(Resource):
             if 'tabela' in argumentos.keys():
                 return jsonify(conn.c.execute(f'PRAGMA table_info({argumentos.get("tabela")})').fetchall())
 
-    def post(self):
-        print(request)
+    def post(self, *args, **kwargs):
+        valores = [value for value in request.args.values()]
         with Connection() as conn:
-            pass
-            # conn.c.execute('SELECT * FROM ')
-        return redirect(url_for('edit_table'))
+            colunas = conn.get_table_columns(valores[0])
+            print(f'[main linha 64] {colunas}')
+            pega = conn.c.execute(f'SELECT * FROM {valores[0]}').fetchall()
+        return make_response(jsonify(pega))
 
 
 api.add_resource(Tabelas, "/edit")
@@ -88,36 +89,13 @@ def get_values(*args, **kwargs):
 @app.route("/edit_table", methods=["GET", "POST"])
 def edit_table(*args, **kwargs):
     if request.method == 'GET':
-        valores = None
-
         with Connection() as conn:
             tabelas = conn.get_nome_tabelas()
-        return render_template('edit_databases.html', tabelas=tabelas, valores=valores)
+        return render_template('edit_databases.html', tabelas=tabelas)
     else:
         valores = list(request.form.listvalues())
-        tabela = valores[0][0]
-        colunas = valores[1]
-        if len(valores) > 2:
-            whereclause = valores[2]
-            wherequery = f'WHERE {colunas} is like "%{whereclause}%"'
-        else:
-            wherequery = ''
-
-        if len(colunas) > 1:
-            colunas = ','.join(colunas)
-        else:
-            colunas = colunas[0]
-
-        tobereturned = f'''
-        SELECT {colunas} FROM {tabela} {wherequery}
-        '''
-        with Connection() as conn:
-            resposta = conn.c.execute(tobereturned).fetchall()
-        to_be_sent = [colunas, resposta]
-
-    #     flask.flash(f"tabela: {tabela}   coluna: {coluna}", f"alert-info {flashclass}")
-        return redirect(url_for('edit_table', data=to_be_sent))
-        # return redirect(url_for("edit_table", tabela=tabela, colunas=colunas))
+        print(valores+"from edit table in line 99")
+        return redirect(url_for('edit_table', valores=valores))
 
 
 @app.get("/links")
