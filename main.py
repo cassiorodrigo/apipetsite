@@ -272,8 +272,8 @@ def freq():
                     data=timestamp,
                     tipo=valores.get('crechehotel'),
                     nome=dog,
-                    public_id= valores.get(dog),
-                    sent_by = current_user.username
+                    public_id=valores.get(dog),
+                    sent_by=current_user.username
                 )
         new_sender = FormSent(
             username=current_user.username,
