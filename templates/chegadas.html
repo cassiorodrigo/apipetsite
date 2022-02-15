@@ -3,69 +3,71 @@
 {% block content %}
 
 <center>
-    <table width="80%">
-        <thead>
-            <tr align="center">
-                <th class="text-success" style="border : 0px; font-size:26px">
-                    Chegadas previstas
-                </th>
-
-            </tr>
-        </thead>
-    </table>
-    <table style="width:80%">
-        <thead>
-            <tr align="center">
-                <th>
-                    Nome Cão
-                </th>
-                <th>
-                    Data Entrada
-                </th>
-                <th>
-                    Data Saída
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for cada_cao in getchegadas() %}
-                {% set chegada = cada_cao[2] | float %}
-                {% set saida = cada_cao[3] | float %}
-                {% set hoje = inout[0] | float %}
-                {% set amanha = inout[1] | float %}
-            {% if hoje < chegada/1000 < amanha or hoje <= saida/1000 <= amanha %}
-                {% set amarelo = "bg-warning" %}
-            {% else %}
-                {% set amarelo = '' %}
-
-            {% endif %}
-            {% if cuidados[cada_cao[1]][0]|length > 0 %}
-            {% set nomecao = cada_cao[1]+'*' %}
-            {% else %}
-            {% set nomecao = cada_cao[1] %}
-            {% endif %}
-            {% if saida/1000 > amanha %}
-                <tr>
-                    <td align="center" class={{ amarelo }}>
-                            <button class="btn btn-secondary m-2" type="button" value="{{ cada_cao[1] }}"
-                                   style="width:50%"
-                                   data-toggle="popover" title="{{ cuidados[cada_cao[1]][0] }}"
-                                    data-content="{{ cuidados[cada_cao[1]][0] }}">{{ nomecao }}</button>
-
-
-                    </td>
-                    <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(chegada/1000) }}</td>
-                    <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(saida/1000) }}</td>
+    <div class="row">
+        <table style="width:80vh">
+            <thead>
+                <tr align="center">
+                    <th class="text-success" style="border : 0px; font-size:26px">
+                        Chegadas previstas
+                    </th>
                 </tr>
-                <tr class="bg-info">
-                    <td height="10px"></td>
-                    <td height="10px"></td>
-                    <td height="10px"></td>
+            </thead>
+        </table>
+    </div>
+    <div class="row">
+        <table style="width:100vh; height:80vh">
+            <thead>
+                <tr align="center" class="col-sm-3">
+                    <th class="col-sm-1">
+                        Nome Cão
+                    </th>
+                    <th class="col-sm-1">
+                        Data Entrada
+                    </th>
+                    <th class="col-sm-1">
+                        Data Saída
+                    </th>
                 </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for cada_cao in getchegadas() %}
+                    {% set chegada = cada_cao[2] | float %}
+                    {% set saida = cada_cao[3] | float %}
+                    {% set hoje = inout[0] | float %}
+                    {% set amanha = inout[1] | float %}
+                {% if hoje < chegada/1000 < amanha or hoje <= saida/1000 <= amanha %}
+                    {% set amarelo = "bg-warning" %}
+                {% else %}
+                    {% set amarelo = '' %}
+
+                {% endif %}
+                {% if cuidados[cada_cao[1]][0]|length > 0 %}
+                {% set nomecao = cada_cao[1]+'*' %}
+                {% else %}
+                {% set nomecao = cada_cao[1] %}
+                {% endif %}
+                {% if saida/1000 > amanha %}
+                    <tr>
+                        <td align="center" class={{ amarelo }}>
+                                <button class="btn btn-secondary m-2" type="button" value="{{ cada_cao[1] }}"
+                                       data-toggle="popover" title="{{ cuidados[cada_cao[1]][0] }}"
+                                        data-content="{{ cuidados[cada_cao[1]][0] }}">{{ nomecao }}</button>
+
+
+                        </td>
+                        <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(chegada/1000) }}</td>
+                        <td align="center" class={{ amarelo }}>{{ date.fromtimestamp(saida/1000) }}</td>
+                    </tr>
+                    <tr class="bg-info">
+                        <td height="10px"></td>
+                        <td height="10px"></td>
+                        <td height="10px"></td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </center>
 
 <script>
