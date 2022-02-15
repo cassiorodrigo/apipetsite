@@ -607,7 +607,7 @@ api.add_resource(ChegadasPrevistas, f"/chegadas/",
 
 api.add_resource(Diretrizes, f"/diretrizes/<string:nomecao>", endpoint='diretrizes')
 api.add_resource(BanhosPedidos, f"/banhos",
-                     f"/banhos/<string:nome>/<string:data_pedido>/<string:data_banho>/<string:tamanho>/0/<integer:perfume>/0.1/<string:orientacoes>",
+                     f"/banhos/<string:nome>/<string:data_pedido>/<string:data_banho>/<string:tamanho>/0/<int:perfume>/0.1/<string:orientacoes>",
                  f"/banhos/<string:nome>/<string:data>")
 
 api.add_resource(PagamentosRegistrar, f"/pagamentos/",
