@@ -24,8 +24,23 @@ table, th, tr, td {
     vertical-align: 'middle';
     }
 
+#formulariofreq{
+    width:100vh;
+    height:80vh;
+    }
+
+form {
+    width: 100vh;
+    heigth: 80vh;
+}
+
 .clock{
     font-size:4rem;
+}
+
+input[type="radio"]{
+    width:4rem;
+    height:4rem;
 }
 
 .loginout{
@@ -39,8 +54,12 @@ table, th, tr, td {
 }
 
 input[type="checkbox"]{
-    height: 3em;
-    width: 3em;
+    height: 4em;
+    width: 4em;
+}
+
+label{
+font-size:2.5rem;
 }
 
 body
@@ -121,7 +140,7 @@ p {
         </ul>
     </nav>
 </header>
-    <div class="container">
+    <div class="container" style="width:100vh;">
         <div class="row">
             {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}

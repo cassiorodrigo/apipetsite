@@ -5,9 +5,11 @@
         table, th, tr, td {
         border: 1px solid black;
         }
-</style>
+        body{
+        width:0vh;
+        }
 
-<body>
+</style>
 <form method="post">
     <div align="center">
         <label class="mb-4 mt-5" for="outrodia"> Enviar formulário para outro dia</label>
@@ -20,20 +22,18 @@
             <input type="datetime-local" name="datetime" id="datetimeinsert">
         </p>
     </div>
-    <table class="mt-4 mr-5 ml-5" id="formulariofreq" name='presencadogs'
-           style="width:100vh; margin-left:50px; margin-top:40px; margin-right:50px ">
+    <table class="mt-4" id="formulariofreq" name='presencadogs'
+           style="width:80vh; margin-top:40px;">
         <tr>
-            <td style="width:80%">Nome</td>
+            <td>Nome</td>
             <td>Presente</td>
         </tr>
         {% for dog in dogs %}
-        <tr>
-            <td>
-                <p>
-                    {{ dog[2]+' ('+dog[3]+')' }}
-                </p>
+        <tr style="width:85vh">
+            <td align="center" style="width:85%">
+                    <label>{{ dog[2]+' ('+dog[3]+')' }}</label>
             </td>
-            <td align="center"><input type="checkbox" name={{ dog[2] }} value={{ dog[-1] }}></td>
+            <td align="center" class="pt-4 pb-4"><input type="checkbox" name={{ dog[2] }} value={{ dog[-1] }}></td>
         </tr>
         {% endfor %}
         <tr>
@@ -48,7 +48,7 @@
             </td>
         </tr>
     </table>
-    <div class="mt-5 mb-2 ml-5" width="80%" align="center">
+    <div class="mt-5 mb-2" width="80%" align="center">
         <input type="radio" id="hotel" name="crechehotel" value="hotel">
         <label for="hotel">Hotel</label><br>
         <input type="radio" id="creche" name="crechehotel" value="creche" checked>
@@ -56,7 +56,7 @@
         <input type="radio" id="Daycare" name="daycare" value="daycare">
         <label for="Daycare">Day Care</label><br>
     </div>
-    <button type="submit" class='btn btn-info mb-5' style="margin-top:35px; margin-left:50px;">Enviar</button>
+        <button type="submit" class='btn btn-info mb-5' style="margin-top:10vh; width:85%; height:15vh; font-size:5rem">Enviar</button>
 </form>
 <script>
 function logar_extra_dog(){
@@ -82,5 +82,4 @@ function logar_extra_dog(){
 }
 
 </script>
-</body>
 {% endblock %}
