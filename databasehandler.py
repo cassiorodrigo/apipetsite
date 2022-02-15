@@ -130,9 +130,6 @@ class Posts(ConectDb):
 class Banhos(ConectDb):
     def __init__(self):
         super().__enter__()
-        # self.conn = sqlite3.connect("dados/administracao.db")
-        # self.c = self.conn.cursor()
-
         create = """
         CREATE TABLE IF NOT EXISTS banhos(
         _ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -151,12 +148,12 @@ class Banhos(ConectDb):
         self.conn.commit()
 
     def inserir_banho(self, *args, **kwargs):
-
+        print(kwargs.values())
         query = """
         INSERT INTO banhos(NOMECAO, DATAPEDIDO, DATABANHO, TAMANHOCAO, BANHO_DADO, PERFUME, BUSCAHORA, ORIENTACOES) 
-        values(?, ?, ?, ?, ?, ?,?,?)
+        values(?,?,?,?,0,?,?,?)
         """
-        self.c.execute(query, args)
+        self.c.execute(query, list(kwargs.values()))
         self.conn.commit()
 
     def deletar_banho(self, nome, data):

@@ -475,11 +475,13 @@ class BanhosPedidos(Resource):
             flask.flash(f"Um erro ocorreu: {err}", 'falert alert-warning {flashclass}')
             return redirect(url_for('home'))
 
-    def post(self, nome, data_pedido, data_banho, tamanho):
+    def post(self, **kwargs):
         try:
-            Banhos().inserir_banho(nome, data_pedido, data_banho, tamanho)
+            with Banhos() as banhos:
+                banhos.inserir_banho(**kwargs)
+            return jsonify(pedido="recebido")
         except Exception:
-            return 501
+            return jsonify(erro="Errrrrrroooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuu")
 
     def delete(self, nome, data):
         try:
@@ -607,7 +609,8 @@ api.add_resource(ChegadasPrevistas, f"/chegadas/",
 
 api.add_resource(Diretrizes, f"/diretrizes/<string:nomecao>", endpoint='diretrizes')
 api.add_resource(BanhosPedidos, f"/banhos",
-                     f"/banhos/<string:nome>/<string:data_pedido>/<string:data_banho>/<string:tamanho>/0/<int:perfume>/0.1/<string:orientacoes>",
+                     f"/banhos/<string:nome>/<int:data_pedido>/<int:data_banho>/<int:tamanho>/<int:perfume>/<string:buscahora>/<string:orientacoes>",
+"/banhos/Braian/1643720866249/1643846400000/M%C3%A9dio/0/N%C3%A3o/0.1/devo%20busc%C3%A1-lo%20por%20volta%20de%2017:30h%20/%2018h"
                  f"/banhos/<string:nome>/<string:data>")
 
 api.add_resource(PagamentosRegistrar, f"/pagamentos/",
