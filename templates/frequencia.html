@@ -6,7 +6,11 @@
         border: 1px solid black;
         }
         body{
-        width:0vh;
+        width:0px;
+        padding-right: 3vh;
+        }
+        form{
+        width:45vh;
         }
 
 </style>
@@ -23,14 +27,14 @@
         </p>
     </div>
     <table class="mt-4" id="formulariofreq" name='presencadogs'
-           style="width:80vh; margin-top:40px;">
+           style="width:100%; margin-top:40px;">
         <tr>
             <td>Nome</td>
             <td>Presente</td>
         </tr>
         {% for dog in dogs %}
         <tr style="width:85vh">
-            <td align="center" style="width:85%">
+            <td align="center" style="width:75%">
                     <label>{{ dog[2]+' ('+dog[3]+')' }}</label>
             </td>
             <td align="center" class="pt-4 pb-4"><input type="checkbox" name={{ dog[2] }} value={{ dog[-1] }}></td>
