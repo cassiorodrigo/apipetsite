@@ -1,21 +1,27 @@
 {% extends "base.html" %}
 <meta http-equiv="refresh" content="1; url={{ url_for('clockin') }}">
 {% block content%}
+<center>
 <p>
     {% set timestring = datetime.now(tz).strftime("Hora: %H:%M:%S") %}
 
-        {{ datetime.now(tz).strftime("%d-%m-%Y") }}
-        <label id="clock"> {{ timestring }} </label>
+        <label class="clock mb-5">{{ datetime.now(tz).strftime("%d-%m-%Y") }}</label>
+        <label id="clock" class="clock mt-3"> {{ timestring }} </label>
 
 </p>
+</center>
 
-<form method="POST">
+<center>
+
+    <form method="POST">
     {% if current_user.clockout %}
-        <input type="submit" class="btn btn-primary" value="Iniciar Trabalho" onclick="url_for('clockin')">
+        <input type="submit" class="btn btn-primary loginout" value="Iniciar Trabalho" onclick="url_for('clockin')">
     {% else %}
-        <input type="submit" class="btn btn-danger" value="Terminar Trabalho" onclick="url_for('clockin')">
+        <input type="submit" class="btn btn-danger loginout" value="Terminar Trabalho" onclick="url_for('clockin')">
     {% endif %}
-</form>
+    </form>
+
+</center>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(event) {

@@ -10,18 +10,18 @@
 <body>
 <form method="post">
     <div align="center">
-        <input type="checkbox" id="outrodia" onclick="var inone = document.querySelector('#dateselector');
+        <label class="mb-4 mt-5" for="outrodia"> Enviar formulário para outro dia</label>
+        <input class="mt-5" type="checkbox" id="outrodia" onclick="var inone = document.querySelector('#dateselector');
             if(this.checked){inone.hidden=false}else{inone.hidden=true}">
-        <label for="outrodia"> Enviar formulário para outro dia</label>
     </div>
     <div class="mb-5" id="dateselector" hidden="true">
         <p>
-            <label for="datetimeinsert">Selectione o dia</label>
+            <label for="datetimeinsert">Selectione o dia</label><br>
             <input type="datetime-local" name="datetime" id="datetimeinsert">
         </p>
     </div>
-    <table class="mt-4" id="formulariofreq" name='presencadogs' style="width:85%; margin-left:50px; margin-top:40px">
-        <thead>Formulario de Frequencia</thead>
+    <table class="mt-4 mr-5 ml-5" id="formulariofreq" name='presencadogs'
+           style="width:100vh; margin-left:50px; margin-top:40px; margin-right:50px ">
         <tr>
             <td style="width:80%">Nome</td>
             <td>Presente</td>

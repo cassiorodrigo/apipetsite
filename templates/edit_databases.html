@@ -31,6 +31,7 @@
             </table>
         </div>
     </div>
+    </div>
 </center>
         <!--input type="button" class="alert alert-info" onclick="colunas.hidden=false" value="Mostrar Colunas"--><br>
 {% endif %}
@@ -54,6 +55,7 @@ async function mostracolunas(tabela){
         for (let i of e){
             ntd = document.createElement('td');
             ntd.innerHTML = i;
+            ntd.setAttribute("class", "p-4")
             ntr.appendChild(ntd)
             };
         tabela_dados.appendChild(ntr)
