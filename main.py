@@ -265,67 +265,26 @@ def freq():
         timestamp = valores.get('datetime')
         if timestamp == '':
             timestamp = datetime.timestamp(datetime.now())
-
-        for dog, pid in valores.items():
+        nomes_presencas = list(filter(lambda x: True if x != 'datetime' and x != 'crechehotel' else False, valores.keys()))
+        for dog in nomes_presencas:
             with PresencasDB() as pre:
                 pre.insert_presencas(
                     data=timestamp,
                     tipo=valores.get('crechehotel'),
                     nome=dog,
-                    public_id= pid,
+                    public_id= valores.get(dog),
                     sent_by = current_user.username
                 )
+        new_sender = FormSent(
+            username=current_user.username,
+            tipo=valores.get('crechehotel'),
+            dogsin=nomes_presencas
+        )
+        new_sender.enviar_mensagem()
+
 
     flask.flash('Caes inseridos com sucesso! Muito Obrigado', f'alert-info {flashclass}')
     return redirect(url_for('welcome', username=current_user.username))
-
-
-
-
-
-
-
-
-
-
-        # Dogs in Hotel or Creche will be managed here.
-        # valores = request.form.listvalues()
-        # valores = list(valores)
-        # dogspresenca = list()
-        # timestamp = valores[0][0]
-        # if timestamp == '':
-        #     timestamp = datetime.timestamp(datetime.now())
-        # for _ in valores[0]:
-        #     for dog in valores[1]:
-        #         with PresencasDB() as pre:
-        #             with DatabaseCaes() as dbc:
-        #                 res = dbc.get_one_dog(dog)
-        #                 if not res:
-        #                     print('res not found')
-        #                     pre.insert_presencas(data=timestamp,
-        #                                          tipo=valores[-1][0],
-        #                                          nome=dog)
-        #                 else:
-        #                     nomecao = res[2]
-        #                     dogspresenca.append(nomecao)
-        #                     pre.insert_presencas(data=timestamp,
-        #                                          tipo=valores[-1][0],
-        #                                          nome=nomecao,
-        #                                          public_id=res[-1])
-        #
-        # print(valores[1:-1])
-        # nomesextras = [dog[0] if len(dog[0]) < 32 else None for dog in valores[1:-1]]
-        # if len(nomesextras) > 1:
-        #     nomesextras = set(nomesextras)
-        #     nomesextras.remove(None)
-        # dogspresenca += nomesextras
-        # print(f'[Linha 295 Main] dogspresenca > {dogspresenca}')
-        # new_sender = FormSent(
-        #     username=current_user.username,
-        #     tipo=valores[-1][0],
-        #     dogsin=dogspresenca
-        # )
-        # new_sender.enviar_mensagem()
 
 
 @app.route("/clockin", methods=["GET", "POST"])
