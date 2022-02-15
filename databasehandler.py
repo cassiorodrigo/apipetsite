@@ -141,18 +141,22 @@ class Banhos(ConectDb):
         DATABANHO TEXT,
         TAMANHOCAO TEXT,
         BANHO_DADO INTEGER DEFAULT 0,
+        PERFUME INTEGER DEFAULT 0,
+        BUSCAHORA REAL,
+        ORIENTACOES TEXT,
         UNIQUE(NOMECAO, DATABANHO)
         )
         """
         self.c.execute(create)
         self.conn.commit()
 
-    def inserir_banho(self, nome, data_pedido, data_banho, tamanho_cao='medio'):
+    def inserir_banho(self, *args, **kwargs):
 
         query = """
-        INSERT INTO banhos(NOMECAO, DATAPEDIDO, DATABANHO, TAMANHOCAO) values(?, ?, ?, ?)
+        INSERT INTO banhos(NOMECAO, DATAPEDIDO, DATABANHO, TAMANHOCAO, BANHO_DADO, PERFUME, BUSCAHORA, ORIENTACOES) 
+        values(?, ?, ?, ?, ?, ?,?,?)
         """
-        self.c.execute(query, [nome, data_pedido, data_banho, tamanho_cao])
+        self.c.execute(query, args)
         self.conn.commit()
 
     def deletar_banho(self, nome, data):

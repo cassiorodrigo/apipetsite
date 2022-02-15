@@ -2,9 +2,14 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
-
+<style>
+    #lembrar{
+    width:1.5rem;
+    height:1.5rem;
+    }
+</style>
 <center>
-<form method="post" class="mt-5" style="width:30%">
+<form method="post" class="mt-5" style="width:35vh">
 
     <div class="row mt-3"> {{ form.hidden_tag() }} </div>
     <div class="row mt-3"> {{ wtf.form_field(form.usuario) }} </div>
@@ -12,7 +17,7 @@
     <div class="row mt-3"></div><br>
     {{ wtf.form_field(form.lembrar) }}
     <div class="row mt-3"> {{ wtf.form_field(form.submit, class="btn btn-info") }} </div>
-    <a type="button" class="btn btn-secondary mt-3" href="{{ url_for('registrar')   }}">Registrar</a>
+    <a type="button" class="btn btn-secondary mt-4" href="{{ url_for('registrar')   }}">Registrar</a>
 
 </form>
 </center>

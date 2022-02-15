@@ -1,7 +1,7 @@
 # from flask_login import UserMixin
 from flask_user import UserManager, UserMixin
 from flask_wtf import FlaskForm
-from wtforms import Form, StringField, EmailField, ValidationError, IntegerField, \
+from wtforms import Form, StringField, EmailField,\
     PasswordField, SubmitField, BooleanField, DateField, TextAreaField, RadioField, TimeField, fields
 from wtforms.validators import Email, EqualTo, Length, InputRequired
 from wtforms_components import SelectField
