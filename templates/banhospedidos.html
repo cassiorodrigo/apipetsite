@@ -21,7 +21,7 @@
                 <td class="text-center"> {{ banho[1] }} </td>
                 <td class="text-center"> {{ banho[2] }} </td>
                 <td class="text-center"> {{ banho[3] }} </td>
-                {% if current_user.name == 'Tayla' %}
+                {% if current_user.name == 'Tayla' or current_user.role == 'superadmin' %}
                 <td class="text-center"><input type="checkbox" id="{{ banho[0] }}" form="banhosdadosform"
                                                name="{{ banho[0] }}, {{ banho[1] }}, {{ banho[2] }}, {{ banho[3] }}"
                                                value="1"></td>
