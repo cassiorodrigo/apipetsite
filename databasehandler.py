@@ -151,7 +151,7 @@ class Banhos(ConectDb):
         print(kwargs.values())
         query = """
         INSERT INTO banhos(NOMECAO, DATAPEDIDO, DATABANHO, TAMANHOCAO, BANHO_DADO, PERFUME, BUSCAHORA, ORIENTACOES) 
-        values(?,?,?,?,0,?,?,?)
+        values(?,?,?,?,0,?,0,?)
         """
         self.c.execute(query, list(kwargs.values()))
         self.conn.commit()
@@ -708,6 +708,7 @@ class FaturasDB(ConectDb):
         """
         res = self.c.execute(q, [token,]).fetchone()
         print(f'[from databasehandler] res = {res}')
+        print(f'[from databasehandler] nametabela = {self.nametabela}')
         return res
 
     def get_valor_total(self, token):

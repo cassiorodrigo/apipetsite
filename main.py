@@ -1,30 +1,4 @@
-import json, time, flask, sqlite3, os, requests
-from geradorpix import QRPix
-from flask import Flask, request, jsonify, Response, render_template, redirect, url_for, make_response, session
-from flask_restful import Resource, Api
-from datetime import datetime, timedelta, timezone, date
-from databasehandler import DatabaseUsuarios, DatabaseCaes, Chegadas, Banhos, Pagamentos, PresencasDB,\
-    FaturasDB, HorastrabalhadasDB, ClockRecorder
-from tratadadosinscricao import InscreverDog
-from flask_login import login_user, login_required, LoginManager, current_user, logout_user
-from edit_tables import Connection
-from flask_bootstrap import Bootstrap
-from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao, Banho
-from telegramsender import FormSent, PedidoBanhos
-import base64
-
-CHAVE = os.getenv("chaveapi")
-app = Flask(__name__)
-app.secret_key = CHAVE
-api = Api(app)
-bstrap = Bootstrap(app)
-login_manager = LoginManager(app)
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-app.config['JSON_AS_ASCII'] = False
-usuario = None
-token = None
-flashclass = "alert-dismissible fade show"
+from resources import *
 
 
 @login_manager.user_loader
@@ -464,6 +438,7 @@ class ChegadasPrevistas(Resource):
 
 class BanhosPedidos(Resource):
     def get(self):
+        print('get chamado em banhos')
         try:
             if request.host_url in request.referrer:
                 res = Banhos().mostrar_banhos()
@@ -473,17 +448,19 @@ class BanhosPedidos(Resource):
         except Exception as err:
             print(err)
             flask.flash(f"Um erro ocorreu: {err}", 'falert alert-warning {flashclass}')
-            return redirect(url_for('home'))
+            return jsonify(err)
 
-    def post(self, **kwargs):
+    def post(self, *args, **kwargs):
+        print(kwargs)
         print(
             f"""
 [MAIN BANHOS] [LINHA481] 
-objeto recebido = {request.json}
+objeto recebido = {request.form.to_dict().keys()}
 """
         )
         try:
             with Banhos() as banhos:
+
                 banhos.inserir_banho(**kwargs)
             return jsonify(pedido="recebido")
         except Exception:

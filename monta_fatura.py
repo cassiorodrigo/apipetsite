@@ -84,8 +84,8 @@ def link_pid_faturas():
 
 
 if __name__ == "__main__":
-    assign_public_id()
-    # monta_fatura(token='a6e1400783904b818326f8932a3e7124')
+    # assign_public_id()
+    monta_fatura(token='eb3be7e5dcb0485bba002d08c6a66e71')
     # assign_token()
     # print(assign_public_id())
     # resultado = get_data_from_db("f0e8e5e0027e465e931d0d72b750b47d")
