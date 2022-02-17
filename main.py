@@ -1,4 +1,5 @@
 import locale
+import sqlalchemy
 import json, time, flask, sqlite3, os, requests
 from geradorpix import QRPix
 from flask import Flask, request, jsonify, Response, render_template, redirect, url_for, make_response, session
@@ -15,6 +16,7 @@ from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao, Ban
 from telegramsender import FormSent, PedidoBanhos
 import base64
 
+
 CHAVE = os.getenv("chaveapi")
 app = Flask(__name__)
 app.secret_key = CHAVE
@@ -27,10 +29,6 @@ app.config['JSON_AS_ASCII'] = False
 usuario = None
 token = None
 flashclass = "alert-dismissible fade show"
-app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-db = SQLAlchemy(app)
-
 
 
 @login_manager.user_loader
