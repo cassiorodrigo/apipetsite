@@ -219,7 +219,7 @@ def welcome():
     if current_user.is_authenticated:
         return redirect(url_for('home',  usuario=current_user.username))
 
-    return render_template('../base.html')
+    return render_template('base.html')
 
 @app.route("/<usuario>", methods=["GET"])
 @login_required

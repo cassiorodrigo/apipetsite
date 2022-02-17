@@ -1,8 +1,0 @@
-@startuml
-'https://plantuml.com/sequence-diagram
-
-autonumber
-
-Banhos --> inscricoes.pid
-
-@enduml
