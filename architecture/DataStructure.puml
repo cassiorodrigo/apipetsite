@@ -1,0 +1,59 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+object Banho
+object Hotel
+object Consumo
+object Fatura
+
+map Consumo{
+Extras
+QtdExtras
+Valor_por_extra
+Total
+}
+
+map Fatura{
+Tutor
+Nome Cao
+Banho
+Hotel
+Dias Banhos
+Dias Hotel
+Preço por banho
+Preço por dia de hotel
+Valor Total Banhos
+Valor Total Hotel
+Valor Total Fatura
+}
+
+map Banho {
+Dog
+PID
+Dias Banhos
+Quantidade Banhos
+}
+
+map Inscricoes {
+    Dog *-> Fatura
+    Dog *---> Hotel
+    PID *-> Banho
+    PID *-> Hotel
+}
+
+map Hotel{
+Dog
+PID
+DatesANDtimes
+QtdDias
+TotalHotel
+}
+
+Inscricoes::Dog *-> Banho::Dog
+Inscricoes::Dog *-> Hotel::Dog
+
+Hotel --> Fatura::Hotel
+Banho::Dias --> Fatura
+
+
+@enduml

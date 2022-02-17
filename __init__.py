@@ -15,6 +15,7 @@ from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao, Ban
 from telegramsender import FormSent, PedidoBanhos
 import base64
 
+
 CHAVE = os.getenv("chaveapi")
 app = Flask(__name__)
 app.secret_key = CHAVE

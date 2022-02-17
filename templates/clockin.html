@@ -2,27 +2,26 @@
 <meta http-equiv="refresh" content="1; url={{ url_for('clockin') }}">
 {% block content%}
 <center>
-<p>
-    {% set timestring = datetime.now(tz).strftime("Hora: %H:%M:%S") %}
+    <div class="col">
+        <div class="row">
+            <p>
+                {% set timestring = datetime.now(tz).strftime("Hora: %H:%M:%S") %}
 
-        <label class="clock mb-5">{{ datetime.now(tz).strftime("%d-%m-%Y") }}</label>
-        <label id="clock" class="clock mt-3"> {{ timestring }} </label>
-
-</p>
+                    <label class="clock mb-5">{{ datetime.now(tz).strftime("%d-%m-%Y") }}</label>
+                    <label id="clock" class="clock mt-3">{{ timestring }}</label>
+            </p>
+        </div>
+            <div class="row">
+                <form method="POST">
+                {% if current_user.clockout %}
+                    <input type="submit" class="btn btn-primary loginout" value="Iniciar Trabalho" onclick="url_for('clockin')">
+                {% else %}
+                    <input type="submit" class="btn btn-danger loginout" value="Terminar Trabalho" onclick="url_for('clockin')">
+                {% endif %}
+                </form>
+            </div>
+    </div>
 </center>
-
-<center>
-
-    <form method="POST">
-    {% if current_user.clockout %}
-        <input type="submit" class="btn btn-primary loginout" value="Iniciar Trabalho" onclick="url_for('clockin')">
-    {% else %}
-        <input type="submit" class="btn btn-danger loginout" value="Terminar Trabalho" onclick="url_for('clockin')">
-    {% endif %}
-    </form>
-
-</center>
-
 <script>
 document.addEventListener("DOMContentLoaded", function(event) {
 
