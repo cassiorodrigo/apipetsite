@@ -15,7 +15,7 @@ from flask_sqlalchemy import SQLAlchemy
 from authflask import Registrar, Logar, User, getuser, Adaptacao, Inscricao, Banho
 from telegramsender import FormSent, PedidoBanhos
 import base64
-
+from vindodogoogle import InscricaoFromGoogle
 
 CHAVE = os.getenv("chaveapi")
 app = Flask(__name__)
@@ -611,6 +611,20 @@ class Diretrizes(Resource):
             res = dbc.get_remarks(nomecao=nomecao)
         return res
 
+
+class VindoDoForms(Resource):
+
+    def post(self):
+        dados = list(request.json.values())
+        ninsc = InscricaoFromGoogle(dados)
+        if ninsc:
+            return jsonify({"Result": "Inserted OK"})
+        else:
+            return jsonify({"Result": "Inserte Failed"})
+
+
+
+api.add_resource(VindoDoForms, '/vindodoforms')
 api.add_resource(Presencas, f"/presencas/", "/presencas/<string:index>")
 api.add_resource(Hotel, f'/hotel/')
 api.add_resource(DayCare, f'/daycare/')
