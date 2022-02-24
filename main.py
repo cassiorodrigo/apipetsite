@@ -615,8 +615,8 @@ class Diretrizes(Resource):
 class VindoDoForms(Resource):
 
     def post(self):
-        dados = list(request.json.values())
-        ninsc = InscricaoFromGoogle(dados)
+        dados = list(request.json)
+        ninsc = InscricaoFromGoogle(dados).insert()
         if ninsc:
             return jsonify({"Result": "Inserted OK"})
         else:

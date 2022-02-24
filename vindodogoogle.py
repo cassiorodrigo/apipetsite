@@ -42,6 +42,9 @@ class GoogleDB:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.conn.commit()
         self.conn.close()
+        print(exc_tb)
+        print(exc_val)
+        print(exc_type)
         return exc_val
 
 
@@ -52,8 +55,7 @@ class InscricaoFromGoogle:
                    "checkin", "checkout", "vacinas", "diretrizes", "aceite", "historico_agressividade", "clinicavet",
                    "telclinicavet", "ativo", "public_id"]
 
-        self.inserir = dict(zip(colunas, self.resposta))
-        print(self.inserir)
+        self.to_insert = dict(zip(colunas, self.resposta))
 
     def create_statement(self):
         pass
@@ -63,7 +65,7 @@ class InscricaoFromGoogle:
             with GoogleDB() as gdb:
                 gdb.c.execute(
                     """
-                    INSERT INTO FROM INSC(
+                    INSERT INTO formsinsc(
                     nome,
                     telefone,
                     email,
@@ -83,7 +85,7 @@ class InscricaoFromGoogle:
                     """, self.resposta)
                 return True
         except Exception as err:
-
+            print(err)
             return False
 
     def monta_fatura(self):
