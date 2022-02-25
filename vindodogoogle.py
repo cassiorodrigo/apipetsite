@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 
 class GoogleDB:
@@ -94,6 +95,29 @@ class InscricaoFromGoogle:
             print(self.resposta)
             fatura = base.format(*self.resposta)
             return fatura
+
+
+class StraightFromGoogle:
+    def __init__(self):
+        self.conn = sqlite3.connect('dados/fromgoogle.db')
+        self.c = self.conn.cursor()
+
+    def __enter__(self):
+        self.conn = sqlite3.connect('dados/fromgoogle.db')
+        self.c = self.conn.cursor()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.conn.commit()
+        self.conn.close()
+
+    def registrar(self, datafromgoogle):
+        try:
+            df = pd.DataFrame(datafromgoogle)
+            df.to_sql("inscricoes", con=self.conn, index=False, if_exists='replace')
+            return True
+        except ValueError:
+            return False
 
 
 class Reservas:
