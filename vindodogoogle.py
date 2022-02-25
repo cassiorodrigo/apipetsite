@@ -113,10 +113,12 @@ class StraightFromGoogle:
 
     def registrar(self, datafromgoogle):
         try:
-            df = pd.DataFrame(datafromgoogle)
-            df.to_sql("inscricoes", con=self.conn, index=False, if_exists='replace')
+            df = pd.DataFrame(datafromgoogle, index=["",])
+            df.to_sql("inscricoes", con=self.conn, if_exists='replace')
             return True
-        except ValueError:
+        except ValueError as err:
+            print("Value error!")
+            print(err)
             return False
 
 

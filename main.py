@@ -627,7 +627,9 @@ class VindoDoForms(Resource):
 
     def post(self):
         dados = request.json
-        dados = list(dados.values())
+        chaves = [int(x) for x in dados.keys()]
+        valores = [x for x in dados.values()]
+        dados = dict(zip(chaves, valores))
         ninsc = StraightFromGoogle().registrar(dados)
         if ninsc:
             return jsonify({"Result": "Inserted OK"})
