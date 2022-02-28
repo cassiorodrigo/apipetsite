@@ -30,8 +30,8 @@ class ClockRecorder(ConectDb):
         _ID INTEGER PRIMARY KEY AUTOINCREMENT,
         USERNAME TEXT,
         EMAIL TEXT, 
-        CLOCKIN REAL DEFAULT NULL,
-        CLOCKOUT REAL DEFAULT NULL,
+        CLOCKIN INTEGER DEFAULT NULL,
+        CLOCKOUT INTEGER DEFAULT NULL,
         DELTA REAL,
         UNIQUE(USERNAME, CLOCKIN, CLOCKOUT)
         )
@@ -42,7 +42,7 @@ class ClockRecorder(ConectDb):
     def insert_clockin(self, username, email):
         tudo = self.c.execute("SELECT COUNT(*) FROM clock").fetchone()[0]
         # print(tudo)
-        tstamp = datetime.timestamp(datetime.now())
+        tstamp = int(datetime.timestamp(datetime.now()))
         if tudo == 0:
             self.c.execute("INSERT INTO clock(USERNAME, EMAIL, CLOCKIN) VALUES(?,?,?)",[username, email, tstamp])
         else:
@@ -63,7 +63,7 @@ class ClockRecorder(ConectDb):
         self.conn.commit()
 
     def insert_clockout(self, identity):
-        clockouttime = datetime.timestamp(datetime.now())
+        clockouttime = int(datetime.timestamp(datetime.now()))
         clockintime = self.c.execute("SELECT CLOCKIN FROM clock WHERE (_ID=?)", [identity,]).fetchone()[0]
         deltat = clockouttime - clockintime
         dados = [clockouttime, deltat, identity]
